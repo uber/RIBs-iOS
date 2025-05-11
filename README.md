@@ -2,6 +2,7 @@
 <img src="https://github.com/uber/ribs/blob/assets/rib_horizontal_black.png" width="60%" height="60%" alt="RIBs"/>
 </p>
 
+[![CI](https://github.com/uber/RIBs-iOS/actions/workflows/iOS.yml/badge.svg?branch=main)](https://github.com/uber/RIBs-iOS/actions/workflows/iOS.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Cocoapods Compatible](https://img.shields.io/cocoapods/v/RIBs.svg)](https://cocoapods.org/pods/ribs)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg)](https://github.com/Carthage/Carthage)
