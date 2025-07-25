@@ -18,15 +18,6 @@
           "revision": "0139c665ebb45e6a9fbdb68aabfd7c39f3fe0071",
           "version": "2.2.2"
         }
-      },
-      {
-        "package": "RxSwift",
-        "repositoryURL": "https://github.com/ReactiveX/RxSwift",
-        "state": {
-          "branch": null,
-          "revision": "5dd1907d64f0d36f158f61a466bab75067224893",
-          "version": "6.9.0"
-        }
       }
     ]
   },
