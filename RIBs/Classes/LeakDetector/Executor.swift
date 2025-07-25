@@ -16,10 +16,11 @@
 
 import Dispatch
 import Foundation
-import RxSwift
+import Combine
 
 public class Executor {
-
+    static var deinitCancellables: Set<AnyCancellable> = .init()
+    
     /// Execute the given logic after the given delay assuming the given maximum frame duration.
     ///
     /// This allows excluding the time elapsed due to breakpoint pauses.
@@ -32,16 +33,21 @@ public class Executor {
     /// - parameter maxFrameDuration: The maximum duration a single frame should take. Defaults to 33ms.
     /// - parameter logic: The closure logic to perform.
     public static func execute(withDelay delay: TimeInterval, maxFrameDuration: Int = 33, logic: @escaping () -> ()) {
-        let period = DispatchTimeInterval.milliseconds(maxFrameDuration / 3)
+        let period = TimeInterval(maxFrameDuration / 3) / 1000.0
         var lastRunLoopTime = Date().timeIntervalSinceReferenceDate
         var properFrameTime = 0.0
         var didExecute = false
-        _ = Observable<Int>
-            .timer(DispatchTimeInterval.milliseconds(0), period: period, scheduler: MainScheduler.instance)
-            .take(while: {  _ in
+        var cancellable: AnyCancellable?
+        
+        cancellable = Timer.publish(every: period, on: .main, in: .common)
+            .autoconnect()
+            .prepend(Date())
+            .prefix(while: { _ in
                 !didExecute
             })
-            .subscribe(onNext: { _ in
+            .sink(receiveCompletion: { _ in
+                
+            }, receiveValue: { _ in
                 let currentTime = Date().timeIntervalSinceReferenceDate
                 let trueElapsedTime = currentTime - lastRunLoopTime
                 lastRunLoopTime = currentTime
@@ -52,9 +58,10 @@ public class Executor {
                 properFrameTime += boundedElapsedTime
                 if properFrameTime > delay {
                     didExecute = true
-
                     logic()
                 }
             })
+        
+        cancellable?.store(in: &deinitCancellables)
     }
 }
