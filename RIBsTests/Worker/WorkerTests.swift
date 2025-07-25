@@ -14,112 +14,118 @@
 //  limitations under the License.
 //
 
-import XCTest
-import RxSwift
 @testable import RIBs
+import Combine
+import XCTest
 
-final class WorkerTests: XCTestCase {
+class WorkerTests: XCTestCase {
 
-    private var worker: TestWorker!
-    private var interactor: InteractorMock!
-    private var disposable: DisposeBag!
-
-    // MARK: - Setup
+    private var interactor: MockInteractor!
+    private var worker: MockWorker!
 
     override func setUp() {
         super.setUp()
 
-        disposable = DisposeBag()
-
-        worker = TestWorker()
-        interactor = InteractorMock()
+        interactor = MockInteractor()
+        worker = MockWorker()
     }
 
-    // MARK: - Tests
+    func test_start_verifyInvokeDidStart() {
+        interactor.activate()
+        worker.start(interactor)
 
-    func test_didStart_onceOnly_boundToInteractor() {
-        XCTAssertEqual(worker.didStartCallCount, 0)
-        XCTAssertEqual(worker.didStopCallCount, 0)
+        XCTAssertTrue(worker.didStartCallCount == 1)
+    }
 
+    func test_start_verifySetIsStarted() {
         worker.start(interactor)
 
         XCTAssertTrue(worker.isStarted)
-        XCTAssertEqual(worker.didStartCallCount, 0)
-        XCTAssertEqual(worker.didStopCallCount, 0)
+    }
 
+    func test_start_multipleTimes_verifyOnlyInvokeOnce() {
+        interactor.activate()
+        worker.start(interactor)
+        worker.start(interactor)
+
+        XCTAssertTrue(worker.didStartCallCount == 1)
+    }
+
+    func test_start_whenScopeInactive_verifyNotInvokeDidStart() {
+        worker.start(interactor)
+
+        XCTAssertTrue(worker.didStartCallCount == 0)
+    }
+
+    func test_start_whenScopeInactive_thenBecomeActive_verifyInvokeDidStart() {
+        worker.start(interactor)
         interactor.activate()
 
-        XCTAssertTrue(worker.isStarted)
-        XCTAssertEqual(worker.didStartCallCount, 1)
-        XCTAssertEqual(worker.didStopCallCount, 0)
+        XCTAssertTrue(worker.didStartCallCount == 1)
+    }
 
+    func test_start_whenScopeActive_thenBecomeInactive_verifyInvokeDidStop() {
+        interactor.activate()
+        worker.start(interactor)
         interactor.deactivate()
 
-        XCTAssertTrue(worker.isStarted)
-        XCTAssertEqual(worker.didStartCallCount, 1)
-        XCTAssertEqual(worker.didStopCallCount, 1)
-
-        worker.start(interactor)
-
-        XCTAssertTrue(worker.isStarted)
-        XCTAssertEqual(worker.didStartCallCount, 1)
-        XCTAssertEqual(worker.didStopCallCount, 1)
-
-        interactor.activate()
-
-        XCTAssertTrue(worker.isStarted)
-        XCTAssertEqual(worker.didStartCallCount, 2)
-        XCTAssertEqual(worker.didStopCallCount, 1)
-
-        worker.stop()
-
-        XCTAssertFalse(worker.isStarted)
-        XCTAssertEqual(worker.didStartCallCount, 2)
-        XCTAssertEqual(worker.didStopCallCount, 2)
-
-        worker.stop()
-
-        XCTAssertFalse(worker.isStarted)
-        XCTAssertEqual(worker.didStartCallCount, 2)
-        XCTAssertEqual(worker.didStopCallCount, 2)
+        XCTAssertTrue(worker.didStopCallCount == 1)
     }
 
-    func test_start_stop_lifecycle() {
-        worker.isStartedStream
-            .take(1)
-            .subscribe(onNext: { XCTAssertFalse($0) })
-            .disposed(by: disposable)
-
+    func test_stop_verifyInvokeDidStop() {
         interactor.activate()
         worker.start(interactor)
 
-        worker.isStartedStream
-            .take(1)
-            .subscribe(onNext: { XCTAssertTrue($0) })
-            .disposed(by: disposable)
+        worker.stop()
+
+        XCTAssertTrue(worker.didStopCallCount == 1)
+    }
+
+    func test_stop_verifySetIsStarted() {
+        interactor.activate()
+        worker.start(interactor)
 
         worker.stop()
 
-        worker.isStartedStream
-            .take(1)
-            .subscribe(onNext: { XCTAssertFalse($0) })
-            .disposed(by: disposable)
+        XCTAssertFalse(worker.isStarted)
+    }
+
+    func test_stop_multipleTimes_verifyOnlyInvokeOnce() {
+        interactor.activate()
+        worker.start(interactor)
+
+        worker.stop()
+        worker.stop()
+
+        XCTAssertTrue(worker.didStopCallCount == 1)
+    }
+
+    func test_stop_beforeStart_verifyNoOp() {
+        worker.stop()
+
+        XCTAssertTrue(worker.didStopCallCount == 0)
+    }
+
+    func test_deinit_whenStarted_verifyInvokeDidStop() {
+        interactor.activate()
+        worker.start(interactor)
+
+        worker = nil
+
+        // Cannot test didStopCallCount since the instance is deallocated.
     }
 }
 
-private final class TestWorker: Worker {
+class MockWorker: Worker {
 
-    private(set) var didStartCallCount: Int = 0
-    private(set) var didStopCallCount: Int = 0
-
-    // MARK: - Overrides
-
+    var didStartCallCount = 0
     override func didStart(_ interactorScope: InteractorScope) {
         super.didStart(interactorScope)
 
         didStartCallCount += 1
     }
 
+    var didStopCallCount = 0
     override func didStop() {
         super.didStop()
 

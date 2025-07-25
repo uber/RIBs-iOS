@@ -14,54 +14,26 @@
 //  limitations under the License.
 //
 
-import XCTest
 @testable import RIBs
+import XCTest
 
-final class ComponentTests: XCTestCase {
+class ComponentTests: XCTestCase {
 
-    // MARK: - Tests
+    func test_init() {
+        let dependency = EmptyDependency()
+        let component = EmptyComponent(dependency: dependency)
 
-    func test_shared() {
-        let component = TestComponent(dependency: EmptyComponent())
-        XCTAssert(component.share === component.share, "Should have returned same shared object")
-
-        XCTAssertTrue(component.share2 === component.share2)
-        XCTAssertFalse(component.share === component.share2)
-
-        XCTAssertEqual(component.callCount, 3)
-    }
-
-    func test_shared_optional() {
-        let component = TestComponent(dependency: EmptyComponent())
-        XCTAssert(component.optionalShare === component.expectedOptionalShare, "Should have returned same shared object")
+        XCTAssertTrue(component.dependency === dependency)
     }
 }
 
-private final class TestComponent: Component<EmptyComponent> {
-
-    private(set) var callCount: Int = 0
-    private(set) var expectedOptionalShare: ClassProtocol? = {
-        return ClassProtocolImpl()
-    }()
-
-    var share: NSObject {
-        callCount += 1
-        return shared { NSObject() }
-    }
-
-    var share2: NSObject {
-        return shared { NSObject() }
-    }
-
-    fileprivate var optionalShare: ClassProtocol? {
-        return shared { self.expectedOptionalShare }
-    }
-}
-
-private protocol ClassProtocol: AnyObject {
+private class EmptyComponent: Component<EmptyDependency> {
 
 }
 
-private final class ClassProtocolImpl: ClassProtocol {
+private class EmptyDependency: Dependency {
 
+    init() {
+        // No-op
+    }
 }

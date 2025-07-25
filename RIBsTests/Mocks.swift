@@ -14,87 +14,70 @@
 //  limitations under the License.
 //
 
-import RIBs
-import RxRelay
-import RxSwift
-import UIKit
+@testable import RIBs
+import Combine
 
-class WindowMock: UIWindow {
+class MockRouter: Routing {
     
-    override var isKeyWindow: Bool {
-        return internalIsKeyWindow
+    var interactable: Interactable {
+        return mockInteractor
     }
     
-    override var rootViewController: UIViewController? {
-        get { return internalRootViewController }
-        set { internalRootViewController = newValue }
+    var children: [Routing] = []
+    
+    var lifecycle: AnyPublisher<RouterLifecycle, Never> {
+        return lifecycleSubject.eraseToAnyPublisher()
     }
     
-    override func makeKeyAndVisible() {
-        internalIsKeyWindow = true
+    var loadCallCount = 0
+    func load() {
+        loadCallCount += 1
     }
     
-    // MARK: - Private
+    var attachCallCount = 0
+    var attachChild_child: Routing?
+    func attachChild(_ child: Routing) {
+        attachCallCount += 1
+        attachChild_child = child
+        children.append(child)
+    }
     
-    private var internalIsKeyWindow: Bool = false
-    private var internalRootViewController: UIViewController?
+    var detachCallCount = 0
+    var detachChild_child: Routing?
+    func detachChild(_ child: Routing) {
+        detachCallCount += 1
+        detachChild_child = child
+        children.removeElementByReference(child)
+    }
+    
+    let mockInteractor = MockInteractor()
+    private let lifecycleSubject = PassthroughSubject<RouterLifecycle, Never>()
 }
 
-class ViewControllableMock: ViewControllable {
-    let uiviewController = UIViewController(nibName: nil, bundle: nil)
-}
-
-class InteractorMock: Interactable {
-    var isActive: Bool {
-        return active.value
-    }
-
-    var isActiveStream: Observable<Bool> {
-        return active.asObservable()
-    }
-
-    private let active = BehaviorRelay<Bool>(value: false)
-
-    init() {}
-
-    // MARK: - Lifecycle
-
-    func activate() {
-        active.accept(true)
-    }
-
-    func deactivate() {
-        active.accept(false)
-    }
-}
-
-class InteractableMock: Interactable {
-    // Variables
-    var isActive: Bool = false { didSet { isActiveSetCallCount += 1 } }
+class MockInteractor: Interactable {
+    
+    var isActive: Bool = false
+    
+    var isActiveCallCount = 0
     var isActiveSetCallCount = 0
-    var isActiveStreamSubject: PublishSubject<Bool> = PublishSubject<Bool>() { didSet { isActiveStreamSubjectSetCallCount += 1 } }
-    var isActiveStreamSubjectSetCallCount = 0
-    var isActiveStream: Observable<Bool> { return isActiveStreamSubject }
-
-    // Function Handlers
-    var activateHandler: (() -> ())?
-    var activateCallCount: Int = 0
-    var deactivateHandler: (() -> ())?
-    var deactivateCallCount: Int = 0
-
-    init() {}
-
+    var isActiveStream: AnyPublisher<Bool, Never> {
+        isActiveCallCount += 1
+        return isActiveSubject.eraseToAnyPublisher()
+    }
+    
+    var activateCallCount = 0
     func activate() {
         activateCallCount += 1
-        if let activateHandler = activateHandler {
-            return activateHandler()
-        }
+        isActive = true
+        isActiveSubject.send(true)
     }
-
+    
+    var deactivateCallCount = 0
     func deactivate() {
         deactivateCallCount += 1
-        if let deactivateHandler = deactivateHandler {
-            return deactivateHandler()
-        }
+        isActive = false
+        isActiveSubject.send(false)
     }
+    
+    private let isActiveSubject = CurrentValueSubject<Bool, Never>(false)
 }

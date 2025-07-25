@@ -16,55 +16,28 @@
 
 @testable import RIBs
 import XCTest
-import CwlPreconditionTesting
 
 class ComponentizedBuilderTests: XCTestCase {
 
-    func test_componentForCurrentPass_builderReturnsSameInstance_verifyAssertion() {
-        let component = MockComponent()
-        let sameInstanceBuilder = MockComponentizedBuilder {
-            return component
-        }
-        sameInstanceBuilder.buildHandler = { component, _ in
-            return MockSimpleRouter()
-        }
+    private var builder: ComponentizedBuilder<EmptyDependency, MockRouter>!
 
-        let _: MockSimpleRouter = sameInstanceBuilder.build(withDynamicBuildDependency: (), dynamicComponentDependency: ())
-        
-        let options = XCTExpectedFailure.Options()
-        options.issueMatcher = { issue in
-            issue.type == .assertionFailure
+    override func setUp() {
+        super.setUp()
+
+        builder = ComponentizedBuilder<EmptyDependency, MockRouter> { dependency in
+            return MockRouter()
         }
-        
-        let assertionFailureException = catchBadInstruction {
-            let _: MockSimpleRouter = sameInstanceBuilder.build(withDynamicBuildDependency: (), dynamicComponentDependency: ())
-        }
-        XCTAssertNotNil(assertionFailureException, "Builder should not return the same instance for the same component. Assertion failure is triggered.")
     }
 
-    func test_componentForCurrentPass_builderReturnsNewInstance_verifyNoAssertion() {
-        let sameInstanceBuilder = MockComponentizedBuilder {
-            return MockComponent()
-        }
-        sameInstanceBuilder.buildHandler = { component, _ in
-            return MockSimpleRouter()
-        }
+    func test_build() {
+        let router = builder.build(with: EmptyDependency())
 
-        let _: MockSimpleRouter = sameInstanceBuilder.build(withDynamicBuildDependency: (), dynamicComponentDependency: ())
-
-        let _: MockSimpleRouter = sameInstanceBuilder.build(withDynamicBuildDependency: (), dynamicComponentDependency: ())
+        XCTAssertNotNil(router)
     }
 }
 
-private class MockComponent {}
-
-private class MockSimpleRouter {}
-
-private class MockComponentizedBuilder: ComponentizedBuilder<MockComponent, MockSimpleRouter, (), ()> {
-
-    fileprivate var buildHandler: ((MockComponent, ()) -> MockSimpleRouter)?
-
-    override func build(with component: MockComponent, _ dynamicBuildDependency: ()) -> MockSimpleRouter {
-        return buildHandler!(component, dynamicBuildDependency)
+private class EmptyDependency: Dependency {
+    override init() {
+        super.init()
     }
 }

@@ -14,198 +14,141 @@
 //  limitations under the License.
 //
 
-import XCTest
-import RxSwift
 @testable import RIBs
+import Combine
+import XCTest
 
-final class WorkerflowTests: XCTestCase {
+class WorkflowTests: XCTestCase {
 
-    func test_nestedStepsDoNotRepeat() {
-        var outerStep1RunCount = 0
-        var outerStep2RunCount = 0
-        var outerStep3RunCount = 0
+    private var workflow: MockWorkflow!
 
-        var innerStep1RunCount = 0
-        var innerStep2RunCount = 0
-        var innerStep3RunCount = 0
+    override func setUp() {
+        super.setUp()
 
-        let emptyObservable = Observable.just(((), ()))
-
-        let workflow = Workflow<String>()
-        _ = workflow
-            .onStep { (mock) -> Observable<((), ())> in
-                outerStep1RunCount += 1
-
-                return emptyObservable
-            }
-            .onStep { (_, _) -> Observable<((), ())> in
-                outerStep2RunCount += 1
-
-                return emptyObservable
-            }
-            .onStep { (_, _) -> Observable<((), ())> in
-                outerStep3RunCount += 1
-
-                let innerStep: Step<String, (), ()>? = emptyObservable.fork(workflow)
-
-                innerStep?
-                    .onStep({ (_, _) -> Observable<((), ())> in
-                        innerStep1RunCount += 1
-                        return emptyObservable
-                    })
-                    .onStep({ (_, _) -> Observable<((), ())> in
-                        innerStep2RunCount += 1
-                        return emptyObservable
-                    })
-                    .onStep({ (_, _) -> Observable<((), ())> in
-                        innerStep3RunCount += 1
-                        return emptyObservable
-                    })
-                    .commit()
-
-                return emptyObservable
-            }
-            .commit()
-            .subscribe("Test Actionable Item")
-
-        XCTAssertEqual(outerStep1RunCount, 1, "Outer step 1 should not have been run more than once")
-        XCTAssertEqual(outerStep2RunCount, 1, "Outer step 2 should not have been run more than once")
-        XCTAssertEqual(outerStep3RunCount, 1, "Outer step 3 should not have been run more than once")
-
-        XCTAssertEqual(innerStep1RunCount, 1, "Inner step 1 should not have been run more than once")
-        XCTAssertEqual(innerStep2RunCount, 1, "Inner step 2 should not have been run more than once")
-        XCTAssertEqual(innerStep3RunCount, 1, "Inner step 3 should not have been run more than once")
+        workflow = MockWorkflow()
     }
 
-    func test_workflowReceivesError() {
-        let workflow = TestWorkflow()
-
-        let emptyObservable = Observable.just(((), ()))
-        _ = workflow
-            .onStep { _ -> Observable<((), ())> in
-                return emptyObservable
-            }
-            .onStep { _, _ -> Observable<((), ())> in
-                return emptyObservable
-            }
-            .onStep { _, _ -> Observable<((), ())> in
-                return Observable.error(WorkflowTestError.error)
-            }
-            .onStep { _, _ -> Observable<((), ())> in
-                return emptyObservable
+    func test_subscribe_verifyOnStepInvocation() {
+        workflow
+            .onStep { (interactor: Interactor) -> AnyPublisher<(Interactor, ()), Error> in
+                self.workflow.invokedStepCount += 1
+                return Just((interactor, ())).setFailureType(to: Error.self).eraseToAnyPublisher()
             }
             .commit()
-            .subscribe(())
 
-        XCTAssertEqual(0, workflow.completeCallCount)
-        XCTAssertEqual(0, workflow.forkCallCount)
-        XCTAssertEqual(1, workflow.errorCallCount)
+        let interactor = Interactor()
+        interactor.activate()
+        workflow.subscribe(interactor)
+
+        XCTAssertTrue(workflow.invokedStepCount == 1)
     }
 
-    func test_workflowDidComplete() {
-        let workflow = TestWorkflow()
-
-        let emptyObservable = Observable.just(((), ()))
-        _ = workflow
-            .onStep { _ -> Observable<((), ())> in
-                return emptyObservable
+    func test_multipleSteps_verifyInvocation() {
+        workflow
+            .onStep { (interactor: Interactor) -> AnyPublisher<(Interactor, ()), Error> in
+                self.workflow.invokedStepCount += 1
+                return Just((interactor, ())).setFailureType(to: Error.self).eraseToAnyPublisher()
             }
-            .onStep { _, _ -> Observable<((), ())> in
-                return emptyObservable
-            }
-            .onStep { _, _ -> Observable<((), ())> in
-                return emptyObservable
+            .onStep { (interactor: Interactor, value: ()) -> AnyPublisher<(Interactor, ()), Error> in
+                self.workflow.invokedStepCount += 1
+                return Just((interactor, ())).setFailureType(to: Error.self).eraseToAnyPublisher()
             }
             .commit()
-            .subscribe(())
 
-        XCTAssertEqual(1, workflow.completeCallCount)
-        XCTAssertEqual(0, workflow.forkCallCount)
-        XCTAssertEqual(0, workflow.errorCallCount)
+        let interactor = Interactor()
+        interactor.activate()
+        workflow.subscribe(interactor)
+
+        XCTAssertTrue(workflow.invokedStepCount == 2)
     }
 
-    func test_workflowDidFork() {
-        let workflow = TestWorkflow()
+    func test_interactorInactive_verifyNoStepInvocation() {
+        let interactor = Interactor()
 
-        let emptyObservable = Observable.just(((), ()))
-        _ = workflow
-            .onStep { _ -> Observable<((), ())> in
-                return emptyObservable
-            }
-            .onStep { _, _ -> Observable<((), ())> in
-                return emptyObservable
-            }
-            .onStep { _, _ -> Observable<((), ())> in
-                return emptyObservable
-            }
-            .onStep { _, _ -> Observable<((), ())> in
-                let forkedStep: Step<(), (), ()>? = emptyObservable.fork(workflow)
-                forkedStep?
-                    .onStep { _, _ -> Observable<((), ())> in
-                        return emptyObservable
-                    }
-                    .commit()
-                return emptyObservable
+        workflow
+            .onStep { (actionableItem: Interactor) -> AnyPublisher<(Interactor, ()), Error> in
+                XCTAssertTrue(actionableItem === interactor)
+                self.workflow.invokedStepCount += 1
+                return Just((interactor, ())).setFailureType(to: Error.self).eraseToAnyPublisher()
             }
             .commit()
-            .subscribe(())
 
-        XCTAssertEqual(1, workflow.completeCallCount)
-        XCTAssertEqual(1, workflow.forkCallCount)
-        XCTAssertEqual(0, workflow.errorCallCount)
+        workflow.subscribe(interactor)
+
+        XCTAssertTrue(workflow.invokedStepCount == 0)
     }
 
-    func test_fork_verifySingleInvocationAtRoot() {
-        let workflow = TestWorkflow()
+    func test_interactorActive_verifyStepInvocation() {
+        let interactor = Interactor()
+        interactor.activate()
 
-        var rootCallCount = 0
-        let emptyObservable = Observable.just(((), ()))
-        let rootStep = workflow
-            .onStep { _ -> Observable<((), ())> in
-                rootCallCount += 1
-                return emptyObservable
-        }
-
-        let firstFork: Step<(), (), ()>? = rootStep.asObservable().fork(workflow)
-        _ = firstFork?
-            .onStep { (_, _) -> Observable<((), ())> in
-                return Observable.just(((), ()))
+        workflow
+            .onStep { (actionableItem: Interactor) -> AnyPublisher<(Interactor, ()), Error> in
+                XCTAssertTrue(actionableItem === interactor)
+                self.workflow.invokedStepCount += 1
+                return Just((interactor, ())).setFailureType(to: Error.self).eraseToAnyPublisher()
             }
             .commit()
 
-        let secondFork: Step<(), (), ()>? = rootStep.asObservable().fork(workflow)
-        _ = secondFork?
-            .onStep { (_, _) -> Observable<((), ())> in
-                return Observable.just(((), ()))
+        workflow.subscribe(interactor)
+
+        XCTAssertTrue(workflow.invokedStepCount == 1)
+    }
+
+    func test_multipleSteps_interactorActiveOnlyAtFirstStep_verifySingleStepInvocation() {
+        let interactor = Interactor()
+        interactor.activate()
+
+        workflow
+            .onStep { (actionableItem: Interactor) -> AnyPublisher<(Interactor, ()), Error> in
+                XCTAssertTrue(actionableItem === interactor)
+                self.workflow.invokedStepCount += 1
+                interactor.deactivate()
+                return Just((interactor, ())).setFailureType(to: Error.self).eraseToAnyPublisher()
+            }
+            .onStep { (actionableItem: Interactor, value: ()) -> AnyPublisher<(Interactor, ()), Error> in
+                XCTFail()
+                self.workflow.invokedStepCount += 1
+                return Just((interactor, ())).setFailureType(to: Error.self).eraseToAnyPublisher()
             }
             .commit()
 
-        XCTAssertEqual(0, rootCallCount)
+        workflow.subscribe(interactor)
 
-        _ = workflow.subscribe(())
+        XCTAssertTrue(workflow.invokedStepCount == 1)
+    }
 
-        XCTAssertEqual(1, rootCallCount)
+    func test_subscription_verifyComplete() {
+        workflow
+            .onStep { (interactor: Interactor) -> AnyPublisher<(Interactor, ()), Error> in
+                self.workflow.invokedStepCount += 1
+                return Just((interactor, ())).setFailureType(to: Error.self).eraseToAnyPublisher()
+            }
+            .commit()
+
+        let interactor = Interactor()
+        interactor.activate()
+        
+        let expectation = XCTestExpectation(description: "Workflow completed")
+        workflow.didCompleteCallCount = 0
+        workflow.didCompleteExpectation = expectation
+        
+        workflow.subscribe(interactor)
+
+        wait(for: [expectation], timeout: 5)
+        XCTAssertTrue(workflow.didCompleteCallCount == 1)
     }
 }
 
-private enum WorkflowTestError: Error {
-    case error
-}
+fileprivate class MockWorkflow: Workflow<Interactor> {
 
-private class TestWorkflow: Workflow<()> {
-    var completeCallCount = 0
-    var errorCallCount = 0
-    var forkCallCount = 0
+    var invokedStepCount = 0
+    var didCompleteCallCount = 0
+    var didCompleteExpectation: XCTestExpectation?
 
     override func didComplete() {
-        completeCallCount += 1
-    }
-
-    override func didFork() {
-        forkCallCount += 1
-    }
-
-    override func didReceiveError(_ error: Error) {
-        errorCallCount += 1
+        super.didComplete()
+        didCompleteCallCount += 1
+        didCompleteExpectation?.fulfill()
     }
 }
