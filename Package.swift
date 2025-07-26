@@ -10,19 +10,17 @@ let package = Package(
         .library(name: "RIBs", targets: ["RIBs"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/ReactiveX/RxSwift", from: "6.5.0"),
-        .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.2.2"), // for testTarget only
     ],
     targets: [
         .target(
             name: "RIBs",
-            dependencies: ["RxSwift", "RxRelay"],
+            dependencies: [],
             path: "RIBs"
         ),
         .testTarget(
-            name: "RIBsTests",
-            dependencies: ["RIBs", "CwlPreconditionTesting"],
-            path: "RIBsTests"
+            name: "CombineRIBsTests",
+            dependencies: ["CombineRIBs"],
+            path: "CombineRIBsTests"
         ),
     ]
 )

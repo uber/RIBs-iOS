@@ -12,8 +12,6 @@ RIBs is the cross-platform architecture behind many mobile apps at Uber. This ar
   s.ios.deployment_target = '13.0'
   s.swift_version = '5.0'
   s.source_files = 'RIBs/Classes/**/*'
-  s.dependency 'RxSwift', '~> 6.5.0'
-  s.dependency 'RxRelay', '~> 6.5.0'
   
   s.test_spec 'Tests' do |test_spec|
     test_spec.source_files = 'RIBsTests/**/*.swift'
