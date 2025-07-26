@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.4
 import PackageDescription
 
 let package = Package(
@@ -9,18 +9,17 @@ let package = Package(
     products: [
         .library(name: "CombineRIBs", targets: ["CombineRIBs"]),
     ],
-    dependencies: [
-    ],
     targets: [
         .target(
             name: "CombineRIBs",
-            dependencies: [],
-            path: "CombineRIBs"
+            path: "CombineRIBs",
+            exclude: ["Info.plist"]
         ),
         .testTarget(
             name: "CombineRIBsTests",
             dependencies: ["CombineRIBs"],
-            path: "CombineRIBsTests"
+            path: "CombineRIBsTests",
+            exclude: ["Info.plist"]
         ),
     ]
 )
