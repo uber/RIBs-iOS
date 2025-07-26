@@ -17,25 +17,37 @@
 @testable import RIBs
 import XCTest
 
-final class FoundationExtensionsTests: XCTestCase {
+class FoundationExtensionsTests: XCTestCase {
 
-    // MARK: - Tests
-
-    func test_removeElementByReference() {
-        let object1 = NSObject()
-        let object2 = NSObject()
-        let object3 = NSObject()
-
-        var array = [object1, object2]
-        XCTAssert(array.count == 2)
-
-        array.removeElementByReference(object1)
-        XCTAssert(array.count == 1)
-
-        array.removeElementByReference(object3)
-        XCTAssert(array.count == 1)
-
-        array.removeElementByReference(object2)
-        XCTAssert(array.isEmpty)
+    func test_arrayRemoveElementByReference_doesNothing_whenElementNotExist() {
+        let a = MockObject()
+        let b = MockObject()
+        let c = MockObject()
+        let d = MockObject()
+        var array = [a, b, c]
+        
+        array.removeElementByReference(d)
+        
+        XCTAssertEqual(array.count, 3)
+        XCTAssertTrue(array[0] === a)
+        XCTAssertTrue(array[1] === b)
+        XCTAssertTrue(array[2] === c)
     }
+
+    func test_arrayRemoveElementByReference_removesElement_whenElementExists() {
+        let a = MockObject()
+        let b = MockObject()
+        let c = MockObject()
+        var array = [a, b, c]
+        
+        array.removeElementByReference(b)
+        
+        XCTAssertEqual(array.count, 2)
+        XCTAssertTrue(array[0] === a)
+        XCTAssertTrue(array[1] === c)
+    }
+}
+
+private class MockObject {
+    
 }

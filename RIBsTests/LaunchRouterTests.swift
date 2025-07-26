@@ -17,30 +17,30 @@
 @testable import RIBs
 import XCTest
 
-final class LaunchRouterTests: XCTestCase {
+class LaunchRouterTests: XCTestCase {
 
-    private var launchRouter: LaunchRouting!
-
-    private var interactor: InteractableMock!
-    private var viewController: ViewControllableMock!
-
-    // MARK: - Setup
+    private var mockWindow: UIWindow!
+    private var mockControllable: ViewControllableMock!
+    private var mockInteractor: MockInteractor!
+    private var router: LaunchRouter<MockInteractor, ViewControllableMock>!
 
     override func setUp() {
         super.setUp()
 
-        interactor = InteractableMock()
-        viewController = ViewControllableMock()
-        launchRouter = LaunchRouter(interactor: interactor, viewController: viewController)
+        mockWindow = UIWindow()
+        mockControllable = ViewControllableMock()
+        mockInteractor = MockInteractor()
+        router = LaunchRouter(interactor: mockInteractor, viewController: mockControllable)
     }
 
-    // MARK: - Tests
+    func test_launch() {
+        router.launch(from: mockWindow)
 
-    func test_launchFromWindow() {
-        let window = WindowMock(frame: .zero)
-        launchRouter.launch(from: window)
-
-        XCTAssert(window.rootViewController === viewController.uiviewController)
-        XCTAssert(window.isKeyWindow)
+        XCTAssertTrue(mockWindow.rootViewController === mockControllable.uiviewController)
+        XCTAssertTrue(mockWindow.isKeyWindow)
     }
+}
+
+private class ViewControllableMock: ViewControllable {
+    let uiviewController = UIViewController()
 }

@@ -16,76 +16,30 @@
 
 @testable import RIBs
 import XCTest
-import CwlPreconditionTesting
 
 class MultiStageComponentizedBuilderTests: XCTestCase {
 
-    private var builder: MockMultiStageComponentizedBuilder!
+    private var builder: MultiStageComponentizedBuilder<EmptyDependency, MockRouter, EmptyDependency, MockRouter>!
 
     override func setUp() {
         super.setUp()
 
-        builder = MockMultiStageComponentizedBuilder {
-            return MockComponent()
+        builder = MultiStageComponentizedBuilder<EmptyDependency, MockRouter, EmptyDependency, MockRouter>(
+            componentBuilder: { _ in return EmptyDependency() }) { _, _ in
+                return MockRouter()
         }
     }
 
-    func test_componentForCurrentPass_samePass_verifySameInstance() {
-        var instance = builder.componentForCurrentBuildPass
-        for _ in 0 ..< 100 {
-            XCTAssertTrue(instance === builder.componentForCurrentBuildPass)
-            instance = builder.componentForCurrentBuildPass
-        }
-    }
+    func test_build() {
+        let dependency = EmptyDependency()
+        let router = builder.build(with: dependency)
 
-    func test_componentForCurrentPass_multiplePasses_verifyDifferentInstances() {
-        builder.finalStageBuildHandler = { component, dynamicDep in
-            XCTAssertEqual(dynamicDep, 92393)
-            return MockSimpleRouter()
-        }
-
-        let firstPassInstance = builder.componentForCurrentBuildPass
-
-        _ = builder.finalStageBuild(withDynamicDependency: 92393)
-
-        let secondPassInstance = builder.componentForCurrentBuildPass
-
-        XCTAssertFalse(firstPassInstance === secondPassInstance)
-    }
-
-    func test_componentForCurrentPass_builderReturnsSameInstance_verifyAssertion() {
-        let component = MockComponent()
-        let sameInstanceBuilder = MockMultiStageComponentizedBuilder {
-            return component
-        }
-        sameInstanceBuilder.finalStageBuildHandler = { component, dynamicDep in
-            XCTAssertEqual(dynamicDep, 92393)
-            return MockSimpleRouter()
-        }
-
-        _ = sameInstanceBuilder.finalStageBuild(withDynamicDependency: 92393)
-
-        let finalStageBuildFatalErrorException = catchBadInstruction {
-            _ = sameInstanceBuilder.finalStageBuild(withDynamicDependency: 92393)
-        }
-        XCTAssertNotNil(finalStageBuildFatalErrorException, "fatalError expected")
-
-        let componentForCurrentBuildPassAssertionFailureException = catchBadInstruction {
-            _ = sameInstanceBuilder.componentForCurrentBuildPass
-        }
-        XCTAssertNotNil(componentForCurrentBuildPassAssertionFailureException, "Assertion failure expected")
+        XCTAssertNotNil(router)
     }
 }
 
-private class MockComponent {}
-
-private class MockSimpleRouter {}
-
-private class MockMultiStageComponentizedBuilder: MultiStageComponentizedBuilder<MockComponent, MockSimpleRouter, Int> {
-
-    fileprivate var finalStageBuildHandler: ((MockComponent, Int) -> MockSimpleRouter)?
-
-    override func finalStageBuild(with component: MockComponent, _ dynamicDependency: Int) -> MockSimpleRouter {
-        return finalStageBuildHandler!(component, dynamicDependency)
+private class EmptyDependency: Dependency {
+    override init() {
+        super.init()
     }
 }
