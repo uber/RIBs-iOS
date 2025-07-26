@@ -1,12 +1,12 @@
 #!/usr/bin/env sh
 
 # Configuration
-XCODE_TEMPLATE_DIR=$HOME'/Library/Developer/Xcode/Templates/File Templates/RIBs'
+XCODE_TEMPLATE_DIR=$HOME'/Library/Developer/Xcode/Templates/File Templates/CombineRIBs'
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Copy RIBs file templates into the local RIBs template directory
+# Copy CombineRIBs file templates into the local CombineRIBs template directory
 xcodeTemplate () {
-  echo "==> Copying up RIBs Xcode file templates..."
+  echo "==> Copying up CombineRIBs Xcode file templates..."
 
   if [ -d "$XCODE_TEMPLATE_DIR" ]; then
     rm -R "$XCODE_TEMPLATE_DIR"
@@ -21,4 +21,4 @@ xcodeTemplate () {
 xcodeTemplate
 
 echo "==> ... success!"
-echo "==> RIBs have been set up. In Xcode, select 'New File...' to use RIBs templates."
+echo "==> CombineRIBs have been set up. In Xcode, select 'New File...' to use CombineRIBs templates."

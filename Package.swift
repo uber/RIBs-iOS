@@ -2,20 +2,20 @@
 import PackageDescription
 
 let package = Package(
-    name: "RIBs",
+    name: "CombineRIBs",
     platforms: [
         .iOS(.v13),
     ],
     products: [
-        .library(name: "RIBs", targets: ["RIBs"]),
+        .library(name: "CombineRIBs", targets: ["CombineRIBs"]),
     ],
     dependencies: [
     ],
     targets: [
         .target(
-            name: "RIBs",
+            name: "CombineRIBs",
             dependencies: [],
-            path: "RIBs"
+            path: "CombineRIBs"
         ),
         .testTarget(
             name: "CombineRIBsTests",
