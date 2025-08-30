@@ -10,7 +10,7 @@ let package = Package(
         .library(name: "RIBs", targets: ["RIBs"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/ReactiveX/RxSwift", from: "6.9.0"),
+        .package(url: "https://github.com/ReactiveX/RxSwift", "6.9.0"..<"7.0.0"),
         .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.2.2"), // for testTarget only
     ],
     targets: [
