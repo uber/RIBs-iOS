@@ -45,25 +45,58 @@ There are some other novel things about RIBs. However, these could also be imple
 For usage of the tooling built around RIBs, please see the [Tooling section](https://github.com/uber/RIBs/wiki#rib-tooling) in our documentation.
 
 ## Installation for iOS
-#### CocoaPods
+
+### Swift Package Manager (Recommended)
+
+To integrate RIBs into your project using Swift Package Manager:
+
+1. In Xcode, go to **File** → **Add Package Dependencies**
+2. Enter the repository URL: `https://github.com/uber/RIBs-iOS.git`
+3. Select the version constraint: `~> 1.0`
+4. Click **Add Package**
+
+Alternatively, you can add it to your `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/uber/RIBs-iOS.git", from: "1.0.0")
+]
+```
+
+### CocoaPods
 
 To integrate RIBs into your project add the following to your `Podfile`:
 
 ```ruby
-pod 'RIBs', '~> 0.9'
+pod 'RIBs', '~> 1.0'
 ```
 
-#### Carthage
+### Carthage
 
 To integrate RIBs into your project using Carthage add the following to your `Cartfile`:
 
 ```ruby
-github "uber/RIBs" ~> 0.9
+github "uber/RIBs" ~> 1.0
 ```
+
+## Dependencies
+
+When you integrate RIBs into your project, it will automatically bring the following dependencies:
+
+### Core Dependencies
+- **RxSwift** (~> 6.0) - Reactive programming library for Swift
+- **RxRelay** (~> 6.0) - Reactive relays for state management
+
+### Platform Requirements
+- **iOS 15.0+** - Minimum deployment target
+- **Swift 5.0+** - Required Swift version
+
+These dependencies are automatically managed by your chosen package manager and will be resolved to compatible versions.
 
 ## Related projects
 
 If you like RIBs, check out other related open source projects from our team:
+- [RIBs-Android](https://github.com/uber/RIBs): Android version of RIBs framework implementation
 - [Needle](https://github.com/uber/needle): a compile-time safe Swift dependency injection framework.
 - [Motif](https://github.com/uber/motif): An abstract on top of Dagger offering simpler APIs for nested scopes.
 - [Swift Concurrency](https://github.com/uber/swift-concurrency): a set of concurrency utility classes used by Uber, inspired by the equivalent [java.util.concurrent](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/package-summary.html) package classes.

@@ -136,3 +136,8 @@
 * Increase buffer capacity for mutableRouterEvents flow within RibEvents by @RahulDMello in https://github.com/uber/RIBs/pull/635
 * Add test asserting Rx subscription is disposed after `RibCoroutineWor… by @psteiger in https://github.com/uber/RIBs/pull/628
 
+### Version 1.0.0
+
+* Bumps RxSwift dependency version to 6.x.x (6.9.0 at the time of the release) by @alexvbush
+* Adds Swift Package Manager (SPM) setup by @alexvbush
+* Improves CocoaPods and Carthage setup by @alexvbush
