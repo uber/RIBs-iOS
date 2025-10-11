@@ -17,6 +17,7 @@
 @testable import RIBs
 import XCTest
 
+@MainActor
 final class LaunchRouterTests: XCTestCase {
 
     private var launchRouter: LaunchRouting!
