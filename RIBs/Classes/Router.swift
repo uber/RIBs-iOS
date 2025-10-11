@@ -24,7 +24,7 @@ public enum RouterLifecycle {
 }
 
 /// The scope of a `Router`, defining various lifecycles of a `Router`.
-public protocol RouterScope: AnyObject {
+nonisolated public protocol RouterScope: AnyObject {
 
     /// An observable that emits values when the router scope reaches its corresponding life-cycle stages. This
     /// observable completes when the router scope is deallocated.
@@ -32,7 +32,7 @@ public protocol RouterScope: AnyObject {
 }
 
 /// The base protocol for all routers.
-public protocol Routing: RouterScope {
+nonisolated public protocol Routing: RouterScope {
 
     // The following methods must be declared in the base protocol, since `Router` internally  invokes these methods.
     // In order to unit test router with a mock child router, the mocked child router first needs to conform to the
@@ -73,7 +73,7 @@ public protocol Routing: RouterScope {
 /// Router drives the lifecycle of its owned `Interactor`.
 ///
 /// Routers should always use helper builders to instantiate children routers.
-open class Router<InteractorType>: Routing {
+nonisolated open class Router<InteractorType>: Routing {
 
     /// The corresponding `Interactor` owned by this `Router`.
     public let interactor: InteractorType
