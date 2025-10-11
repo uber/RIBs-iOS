@@ -16,10 +16,9 @@
 
 import Foundation
 import RxSwift
-import UIKit
 
 /// Protocol defining the activeness of an interactor's scope.
-public protocol InteractorScope: AnyObject {
+nonisolated public protocol InteractorScope: AnyObject {
 
     // The following properties must be declared in the base protocol, since `Router` internally invokes these methods.
     // In order to unit test router with a mock interactor, the mocked interactor first needs to conform to the custom
@@ -37,7 +36,7 @@ public protocol InteractorScope: AnyObject {
 }
 
 /// The base protocol for all interactors.
-public protocol Interactable: InteractorScope {
+nonisolated public protocol Interactable: InteractorScope {
 
     // The following methods must be declared in the base protocol, since `Router` internally invokes these methods.
     // In order to unit test router with a mock interactor, the mocked interactor first needs to conform to the custom
@@ -64,7 +63,8 @@ public protocol Interactable: InteractorScope {
 /// active.
 ///
 /// An `Interactor` should only perform its business logic when it's currently active.
-open class Interactor: Interactable {
+nonisolated open class Interactor: Interactable {
+    
 
     /// Indicates if the interactor is active.
     public final var isActive: Bool {

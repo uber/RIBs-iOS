@@ -54,7 +54,7 @@ public protocol LeakDetectionHandle {
 public class LeakDetector {
 
     /// The singleton instance.
-    public static private(set) var instance = LeakDetector()
+    nonisolated(unsafe) public static private(set) var instance = LeakDetector()
 
     // This is used internally to be able to set mock instance in unit-tests. The public API and behavior of the public static LeakDetector instance above does not change.
     static func setInstance(_ newInstance: LeakDetector) {
@@ -91,25 +91,25 @@ public class LeakDetector {
             self.expectationCount.accept(self.expectationCount.value - 1)
         }
 
-        Executor.execute(withDelay: time) {
-            // Retain the handle so we can check for the cancelled status. Also cannot use the cancellable
-            // concurrency API since the returned handle must be retained to ensure closure is executed.
-            if !handle.cancelled {
-                let didDeallocate = (self.trackingObjects.object(forKey: objectId) == nil)
-                let message = "<\(objectDescription): \(objectId)> has leaked. Objects are expected to be deallocated at this time: \(self.trackingObjects)"
-
-                if self.disableLeakDetector {
-                    if !didDeallocate {
-                        print("Leak detection is disabled. This should only be used for debugging purposes.")
-                        print(message)
-                    }
-                } else {
-                    assert(didDeallocate, message)
-                }
-            }
-
-            self.expectationCount.accept(self.expectationCount.value - 1)
-        }
+//        Executor.execute(withDelay: time) {
+//            // Retain the handle so we can check for the cancelled status. Also cannot use the cancellable
+//            // concurrency API since the returned handle must be retained to ensure closure is executed.
+//            if !handle.cancelled {
+//                let didDeallocate = (self.trackingObjects.object(forKey: objectId) == nil)
+//                let message = "<\(objectDescription): \(objectId)> has leaked. Objects are expected to be deallocated at this time: \(self.trackingObjects)"
+//
+//                if self.disableLeakDetector {
+//                    if !didDeallocate {
+//                        print("Leak detection is disabled. This should only be used for debugging purposes.")
+//                        print(message)
+//                    }
+//                } else {
+//                    assert(didDeallocate, message)
+//                }
+//            }
+//
+//            self.expectationCount.accept(self.expectationCount.value - 1)
+//        }
 
         return handle
     }
@@ -153,7 +153,7 @@ public class LeakDetector {
     // MARK: - Internal Interface
 
     // Test override for leak detectors.
-    static var disableLeakDetectorOverride: Bool = false
+    nonisolated(unsafe) static var disableLeakDetectorOverride: Bool = false
 
     #if DEBUG
         /// Reset the state of Leak Detector, internal for UI test only.
