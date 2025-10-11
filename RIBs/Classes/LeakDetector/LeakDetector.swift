@@ -83,7 +83,6 @@ public class LeakDetector {
     public func expectDeallocate(object: AnyObject, inTime time: TimeInterval = LeakDefaultExpectationTime.deallocation) -> LeakDetectionHandle {
         expectationCount.accept(expectationCount.value + 1)
 
-        let objectDescription = String(describing: object)
         let objectId = String(ObjectIdentifier(object).hashValue) as NSString
         trackingObjects.setObject(object, forKey: objectId)
 

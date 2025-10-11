@@ -12,7 +12,7 @@ import CwlPreconditionTesting
 
 
 @MainActor
-final class ViewControllerMock: @MainActor ViewControllable {
+final class ViewControllerMock: ViewControllable {
     
     var uiviewController: UIViewController {
         return UIViewController()
@@ -31,10 +31,10 @@ final class ViewableRouterTests: XCTestCase {
         LeakDetector.setInstance(leakDetectorMock)
     }
 
-    func test_leakDetection() {
+    func test_leakDetection() async {
         // given
         let interactor = PresentableInteractor(presenter: PresenterMock())
-        let viewController = ViewControllerMock()
+        let viewController = await ViewControllerMock()
         router = ViewableRouter(interactor: interactor, viewController: viewController)
         router.load()
         // when
@@ -43,10 +43,10 @@ final class ViewableRouterTests: XCTestCase {
         XCTAssertEqual(leakDetectorMock.expectViewControllerDisappearCallCount, 1)
     }
 
-    func test_deinit_triggers_leakDetection() {
+    func test_deinit_triggers_leakDetection() async {
         // given
         let interactor = PresentableInteractor(presenter: PresenterMock())
-        let viewController = ViewControllerMock()
+        let viewController = await ViewControllerMock()
         router = ViewableRouter(interactor: interactor, viewController: viewController)
         router.load()
         // when
