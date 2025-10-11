@@ -1,10 +1,10 @@
-// swift-tools-version:5.5
+// swift-tools-version:6.0
 import PackageDescription
 
 let package = Package(
     name: "RIBs",
     platforms: [
-        .iOS("15.0"),
+        .iOS(.v18)
     ],
     products: [
         .library(name: "RIBs", targets: ["RIBs"]),
@@ -20,7 +20,12 @@ let package = Package(
                 .product(name: "RxSwift", package: "RxSwift"),
                 .product(name: "RxRelay", package: "RxSwift")
             ],
-            path: "RIBs"
+            path: "RIBs",
+            swiftSettings: [
+//                .unsafeFlags(["-Xfrontend", "-strict-concurrency=complete"]),
+                .swiftLanguageMode(.v6),
+                .enableUpcomingFeature("StrictConcurrency"),
+            ]
         ),
         .testTarget(
             name: "RIBsTests",
