@@ -27,8 +27,8 @@ final class LaunchRouterTests: XCTestCase {
 
     // MARK: - Setup
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
         interactor = InteractableMock()
         viewController = ViewControllableMock()
