@@ -83,6 +83,7 @@ public class LeakDetector {
     public func expectDeallocate(object: AnyObject, inTime time: TimeInterval = LeakDefaultExpectationTime.deallocation) -> LeakDetectionHandle {
         expectationCount.accept(expectationCount.value + 1)
 
+        let objectDescription = String(describing: object)
         let objectId = String(ObjectIdentifier(object).hashValue) as NSString
         trackingObjects.setObject(object, forKey: objectId)
 
@@ -90,25 +91,25 @@ public class LeakDetector {
             self.expectationCount.accept(self.expectationCount.value - 1)
         }
 
-//        Executor.execute(withDelay: time) {
-//            // Retain the handle so we can check for the cancelled status. Also cannot use the cancellable
-//            // concurrency API since the returned handle must be retained to ensure closure is executed.
-//            if !handle.cancelled {
-//                let didDeallocate = (self.trackingObjects.object(forKey: objectId) == nil)
-//                let message = "<\(objectDescription): \(objectId)> has leaked. Objects are expected to be deallocated at this time: \(self.trackingObjects)"
-//
-//                if self.disableLeakDetector {
-//                    if !didDeallocate {
-//                        print("Leak detection is disabled. This should only be used for debugging purposes.")
-//                        print(message)
-//                    }
-//                } else {
-//                    assert(didDeallocate, message)
-//                }
-//            }
-//
-//            self.expectationCount.accept(self.expectationCount.value - 1)
-//        }
+        Executor.execute(withDelay: time) {
+            // Retain the handle so we can check for the cancelled status. Also cannot use the cancellable
+            // concurrency API since the returned handle must be retained to ensure closure is executed.
+            if !handle.cancelled {
+                let didDeallocate = (self.trackingObjects.object(forKey: objectId) == nil)
+                let message = "<\(objectDescription): \(objectId)> has leaked. Objects are expected to be deallocated at this time: \(self.trackingObjects)"
+
+                if self.disableLeakDetector {
+                    if !didDeallocate {
+                        print("Leak detection is disabled. This should only be used for debugging purposes.")
+                        print(message)
+                    }
+                } else {
+                    assert(didDeallocate, message)
+                }
+            }
+
+            self.expectationCount.accept(self.expectationCount.value - 1)
+        }
 
         return handle
     }
