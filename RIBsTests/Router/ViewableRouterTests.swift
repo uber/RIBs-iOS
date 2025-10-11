@@ -11,7 +11,8 @@ import XCTest
 import CwlPreconditionTesting
 
 
-final class ViewControllerMock: ViewControllable {
+@MainActor
+final class ViewControllerMock: @MainActor ViewControllable {
     
     var uiviewController: UIViewController {
         return UIViewController()

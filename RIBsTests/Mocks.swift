@@ -40,6 +40,7 @@ class WindowMock: UIWindow {
     private var internalRootViewController: UIViewController?
 }
 
+@MainActor
 class ViewControllableMock: ViewControllable {
     let uiviewController = UIViewController(nibName: nil, bundle: nil)
 }
