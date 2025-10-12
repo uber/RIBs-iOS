@@ -18,7 +18,7 @@ import Foundation
 
 /// The base protocol for all `Presenter`s.
 @MainActor
-public protocol Presentable: AnyObject {
+public protocol Presentable: AnyObject, Sendable {
     associatedtype Listener
         
     nonisolated var listener: Listener? { get set }
@@ -27,7 +27,7 @@ public protocol Presentable: AnyObject {
 /// The base class of all `Presenter`s. A `Presenter` translates business models into values the corresponding
 /// `ViewController` can consume and display. It also maps UI events to business logic method, invoked to
 /// its listener.
-open class Presenter<ViewControllerType>: @MainActor Presentable {
+open class Presenter<ViewControllerType>: Presentable {
     nonisolated(unsafe) public var listener: Listener?
     
     public typealias Listener = Any
