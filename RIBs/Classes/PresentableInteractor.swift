@@ -31,7 +31,7 @@ nonisolated open class PresentableInteractor<PresenterType>: Interactor {
         self.presenter = presenter
     }
     
-    public nonisolated func presentOnMainThread(_ block: @escaping @MainActor (PresenterType) -> Void) {
+    public nonisolated func presentOnMainThread(_ block: @escaping @MainActor (_ presenter: PresenterType) -> Void) {
         nonisolated(unsafe) let presenter = self.presenter
         
         Task { @MainActor in
