@@ -94,9 +94,10 @@ open class ViewableRouter<InteractorType, ViewControllerType>: Router<Interactor
     }
 
     deinit {
-        nonisolated(unsafe) let `self` = self
+        nonisolated(unsafe) let viewControllable = self.viewControllable
+        
         Task { @MainActor in
-            let _ = LeakDetector.instance.expectDeallocate(object: self.viewControllable.uiviewController, inTime: LeakDefaultExpectationTime.viewDisappear)
+            let _ = LeakDetector.instance.expectDeallocate(object: viewControllable.uiviewController, inTime: LeakDefaultExpectationTime.viewDisappear)
         }
     }
 }

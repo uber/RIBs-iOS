@@ -31,27 +31,48 @@ final class ViewableRouterTests: XCTestCase {
         LeakDetector.setInstance(leakDetectorMock)
     }
 
-    func test_leakDetection() async {
+    func test_leakDetection() {
         // given
         let interactor = PresentableInteractor(presenter: PresenterMock())
-        let viewController = await ViewControllerMock()
+        let viewController = ViewControllerMock()
         router = ViewableRouter(interactor: interactor, viewController: viewController)
         router.load()
+
+        let disappearExpectation = self.expectation(description: "Wait for view controller to disappear")
+
+        leakDetectorMock.onViewControllerDisappearCalled = { [weak leakDetectorMock] in
+            if leakDetectorMock?.expectViewControllerDisappearCallCount == 1 {
+                disappearExpectation.fulfill()
+            }
+        }
+
         // when
         interactor.deactivate()
-        // then
-        XCTAssertEqual(leakDetectorMock.expectViewControllerDisappearCallCount, 1)
-    }
 
-    func test_deinit_triggers_leakDetection() async {
+        // then
+        wait(for: [disappearExpectation], timeout: 2.0)
+    }
+    
+    func test_deinit_triggers_leakDetection() {
         // given
         let interactor = PresentableInteractor(presenter: PresenterMock())
-        let viewController = await ViewControllerMock()
+        let viewController = ViewControllerMock()
         router = ViewableRouter(interactor: interactor, viewController: viewController)
         router.load()
         // when
+        let deallocationExpectation = self.expectation(description: "Expect deallocate to be called twice")
+        
+        leakDetectorMock.onDeallocateCalled = { [weak leakDetectorMock] in
+            
+            if leakDetectorMock?.expectDeallocateCallCount == 2 {
+                deallocationExpectation.fulfill()
+            }
+        }
+        
+        // when
         router = nil
+        
         // then
-        XCTAssertEqual(leakDetectorMock.expectDeallocateCallCount, 2)
+        wait(for: [deallocationExpectation], timeout: 5.0)
     }
 }

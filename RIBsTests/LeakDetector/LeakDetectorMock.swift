@@ -19,21 +19,45 @@ final class LeakDetectionHandleMock: LeakDetectionHandle {
 
 final class LeakDetectorMock: LeakDetector {
     
-    var expectDeallocateCallCount = 0
-    override func expectDeallocate(object: AnyObject, inTime time: TimeInterval) -> LeakDetectionHandle {
-        expectDeallocateCallCount += 1
-        return LeakDetectionHandleMock()
+    private let queue = DispatchQueue(label: "com.LeakDetectorMock.state")
+
+    private var _statusCallCount = 0
+    var statusCallCount: Int {
+        queue.sync { self._statusCallCount }
     }
-    
-    var expectViewControllerDisappearCallCount = 0
-    override func expectViewControllerDisappear(viewController: UIViewController, inTime time: TimeInterval) -> LeakDetectionHandle {
-        expectViewControllerDisappearCallCount += 1
-        return LeakDetectionHandleMock()
-    }
-    
-    var statusCallCount = 0
     override var status: Observable<LeakDetectionStatus> {
-        statusCallCount += 1
+        // Note: The get block for a computed property is synchronous.
+        queue.sync {
+            self._statusCallCount += 1
+        }
         return super.status
+    }
+    
+
+    var onDeallocateCalled: (() -> Void)?
+    private var _expectDeallocateCallCount = 0
+    var expectDeallocateCallCount: Int {
+        queue.sync { self._expectDeallocateCallCount }
+    }
+    override func expectDeallocate(object: AnyObject, inTime time: TimeInterval) -> LeakDetectionHandle {
+        queue.sync {
+            self._expectDeallocateCallCount += 1
+        }
+        onDeallocateCalled?()
+        return LeakDetectionHandleMock()
+    }
+    
+
+    var onViewControllerDisappearCalled: (() -> Void)?
+    private var _expectViewControllerDisappearCallCount = 0
+    var expectViewControllerDisappearCallCount: Int {
+        queue.sync { self._expectViewControllerDisappearCallCount }
+    }
+    override func expectViewControllerDisappear(viewController: UIViewController, inTime time: TimeInterval) -> LeakDetectionHandle {
+        queue.sync {
+            self._expectViewControllerDisappearCallCount += 1
+        }
+        onViewControllerDisappearCalled?()
+        return LeakDetectionHandleMock()
     }
 }
