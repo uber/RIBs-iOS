@@ -54,7 +54,82 @@ open class ViewableRouter<InteractorType, ViewControllerType>: Router<Interactor
 
         super.init(interactor: interactor)
     }
+    
+    /// A helper method to safely call viewController methods for UI navigation on the main thread.
+    /// When routing in RIBs that have UI (using ViewableRouter), the plumbing of routing such as clearing out
+    /// child RIB references, setting them up, or attaching/detaching child routers can happen on any thread.
+    /// However, the actual physical/mechanical navigation of the UI - such as pushing or popping child RIB's UI
+    /// onto/off the navigation controller stack, modally presenting or dismissing it, or attaching/detaching it
+    /// from the UI hierarchy via custom implementation using child containment API - must all be done on the main thread
+    /// since they manipulate the UI tree and trigger UI rendering.
+    /// 
+    /// This method ensures that your viewController method calls run on the main thread.
+    /// Use this method when you encounter compiler warnings such as:
+    /// "Main actor-isolated property 'uiviewController' cannot be referenced from a nonisolated context"
+    ///
+    /// Example usage - routing away from child RIB:
+    /// ```swift
+    /// func routeAwayFromChildRIB() {
+    ///     if let childRIBRouter = childRIBRouter {
+    ///         self.childRIBRouter = nil
+    ///         
+    ///         navigateOnMainThread { thisRouterViewController in
+    ///             thisRouterViewController.uiviewController.dismiss(animated: true) { [weak self] in
+    ///                 self?.detachChild(childRIBRouter)
+    ///             }
+    ///         }
+    ///     }
+    /// }
+    /// ```
+    public nonisolated func navigateOnMainThread(_ block: @escaping @MainActor (_ thisRouterViewController: ViewControllerType) -> Void) {
+        nonisolated(unsafe) let thisRouterViewController = self.viewController
 
+        Task { @MainActor in
+            block(thisRouterViewController)
+        }
+    }
+    
+    /// A helper method to safely call viewController methods for UI navigation on the main thread with a child view controller.
+    /// This overload provides both the current router's view controller and a child view controller to the closure,
+    /// ensuring all UI operations happen on the main thread.
+    /// 
+    /// When routing in RIBs that have UI (using ViewableRouter), the plumbing of routing such as clearing out
+    /// child RIB references, setting them up, or attaching/detaching child routers can happen on any thread.
+    /// However, the actual physical/mechanical navigation of the UI - such as pushing or popping child RIB's UI
+    /// onto/off the navigation controller stack, modally presenting or dismissing it, or attaching/detaching it
+    /// from the UI hierarchy via custom implementation using child containment API - must all be done on the main thread
+    /// since they manipulate the UI tree and trigger UI rendering.
+    /// 
+    /// This method ensures that your viewController method calls run on the main thread.
+    /// Use this method when you encounter compiler warnings such as:
+    /// "Main actor-isolated property 'uiviewController' cannot be referenced from a nonisolated context"
+    /// 
+    /// This is an overload of the basic `navigateOnMainThread(_:)` method that includes a child view controller parameter.
+    /// Use this method when you need to perform UI navigation that involves both the current router's view controller
+    /// and a child view controller, such as presenting, pushing, or custom containment operations.
+    /// For navigation operations that only involve the current router's view controller, use the basic `navigateOnMainThread(_:)` method instead.
+    ///
+    /// Example usage - routing to child RIB:
+    /// ```swift
+    /// func routeToChildRIB() {
+    ///     let childRIBRouter = childRIBBuilder.build(withListener: interactor)
+    ///     self.childRIBRouter = childRIBRouter
+    ///     navigateOnMainThread(with: childRIBRouter.viewControllable) { thisRouterViewController, childViewController in
+    ///         thisRouterViewController.attachChildRIBViewController(childViewController.uiviewController)
+    ///     }
+    ///     attachChild(childRIBRouter)
+    /// }
+    /// ```
+    
+    public nonisolated func navigateOnMainThread(with childViewController: ViewControllable, _ block: @escaping @MainActor (_ thisRouterViewController: ViewControllerType, _ childViewController: ViewControllable) -> Void) {
+        nonisolated(unsafe) let thisRouterViewController = self.viewController
+        nonisolated(unsafe) let childVC = childViewController
+
+        Task { @MainActor in
+            block(thisRouterViewController, childVC)
+        }
+    }
+    
     // MARK: - Internal
 
     override func internalDidLoad() {
