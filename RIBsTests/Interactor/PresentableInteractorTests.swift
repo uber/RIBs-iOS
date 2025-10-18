@@ -9,13 +9,19 @@
 import XCTest
 import RxSwift
 
-protocol TestPresenter {}
+protocol MockPresentableListener: AnyObject {
+    
+}
 
-final class PresenterMock: TestPresenter {}
+protocol TestPresenter: Presentable where Listener == MockPresentableListener {}
+
+final class PresenterMock: TestPresenter {
+    nonisolated(unsafe) weak var listener: MockPresentableListener?
+}
 
 final class PresentableInteractorTests: XCTestCase {
     
-    private var interactor: PresentableInteractor<TestPresenter>!
+    private var interactor: PresentableInteractor<PresenterMock>!
     
     override func setUp() {
         super.setUp()
@@ -26,7 +32,7 @@ final class PresentableInteractorTests: XCTestCase {
         // given
         let presenterMock = PresenterMock()
         let disposeBag = DisposeBag()
-        interactor = PresentableInteractor<TestPresenter>(presenter: presenterMock)
+        interactor = PresentableInteractor<PresenterMock>(presenter: presenterMock)
         var status: LeakDetectionStatus = .DidComplete
         LeakDetector.instance.status.subscribe { newStatus in
             status = newStatus

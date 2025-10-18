@@ -17,7 +17,7 @@
 import Foundation
 
 /// Base class of an `Interactor` that actually has an associated `Presenter` and `View`.
-nonisolated open class PresentableInteractor<PresenterType: Presentable & SendableMetatype>: Interactor {
+nonisolated open class PresentableInteractor<PresenterType: Presentable & SendableMetatype>: Interactor, @unchecked Sendable {
 
     /// The `Presenter` associated with this `Interactor`.
     public let presenter: PresenterType

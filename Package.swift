@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "RIBs",
     platforms: [
-        .iOS(.v18)
+        .iOS(.v15)
     ],
     products: [
         .library(name: "RIBs", targets: ["RIBs"]),
@@ -22,7 +22,6 @@ let package = Package(
             ],
             path: "RIBs",
             swiftSettings: [
-//                .unsafeFlags(["-Xfrontend", "-strict-concurrency=complete"]),
                 .swiftLanguageMode(.v6),
                 .enableUpcomingFeature("StrictConcurrency"),
             ]

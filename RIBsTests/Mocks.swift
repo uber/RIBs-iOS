@@ -45,7 +45,7 @@ class ViewControllableMock: ViewControllable {
     let uiviewController = UIViewController(nibName: nil, bundle: nil)
 }
 
-class InteractorMock: Interactor {
+class InteractorMock: Interactor, @unchecked Sendable {
     var didBecomeActiveHandler: (() -> ())?
     var didBecomeActiveCallCount: Int = 0
     var willResignActiveHandler: (() -> ())?
