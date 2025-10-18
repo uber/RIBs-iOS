@@ -31,6 +31,48 @@ nonisolated open class PresentableInteractor<PresenterType: Presentable & Sendab
         self.presenter = presenter
     }
     
+    
+    /// A helper method to safely call presenter methods on the main thread.
+    /// Use this when you encounter main actor isolation warnings when calling methods on the presenter object.
+    /// All presenter methods should be executed on the main thread because they ultimately trigger UI rendering.
+    /// This method captures the presenter object in a MainActor task, allowing you to safely call methods on it.
+    /// The closure you pass contains the code for your custom presenter method calls, and the closure provides
+    /// you with the presenter instance/reference of this interactor.
+    /// 
+    /// You can use this method to call presenter UI callbacks in RxSwift observable subscriptions or from Tasks.
+    ///
+    /// Example usage in RxSwift subscription:
+    /// ```swift
+    /// stream.dataObservable
+    ///     .subscribe(on: backgroundScheduler)
+    ///     .observe(on: MainScheduler.instance)
+    ///     .subscribe(onNext: { _ in
+    ///         self.presentOnMainThread { presenter in
+    ///             presenter.presentStuff()
+    ///         }
+    ///     }).disposeOnDeactivate(interactor: self)
+    /// ```
+    ///
+    /// Example usage in async Task:
+    /// ```swift
+    /// Task {
+    ///     try? await Task.sleep(for: .seconds(2))
+    ///     
+    ///     await MainActor.run {
+    ///         presenter.presentStuff()
+    ///     }
+    ///     
+    ///     await presenter.presentStuff()
+    ///     
+    ///     Task { @MainActor in
+    ///         presenter.presentStuff()
+    ///     }
+    ///     
+    ///     self.presentOnMainThread { presenter in
+    ///         presenter.presentStuff()
+    ///     }
+    /// }
+    /// ```
     public nonisolated func presentOnMainThread(_ block: @escaping @MainActor (_ presenter: PresenterType) -> Void) {
         nonisolated(unsafe) let presenter = self.presenter
         

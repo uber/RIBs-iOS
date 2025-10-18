@@ -63,7 +63,7 @@ nonisolated public protocol Interactable: InteractorScope {
 /// active.
 ///
 /// An `Interactor` should only perform its business logic when it's currently active.
-nonisolated open class Interactor: Interactable {
+nonisolated open class Interactor: Interactable, @unchecked Sendable {
     
 
     /// Indicates if the interactor is active.
