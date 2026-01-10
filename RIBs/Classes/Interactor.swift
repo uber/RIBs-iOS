@@ -142,13 +142,11 @@ open class Interactor: Interactable {
     private let isActiveSubject = BehaviorSubject<Bool>(value: false)
     fileprivate var activenessDisposable: CompositeDisposable?
 
-    deinit {
-        // TODO: deal with this later
-        
-//        if isActive {
-//            deactivate()
-//        }
-//        isActiveSubject.onCompleted()
+    isolated deinit {
+        if isActive {
+            deactivate()
+        }
+        isActiveSubject.onCompleted()
     }
 }
 

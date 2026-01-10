@@ -91,8 +91,7 @@ open class ViewableRouter<InteractorType, ViewControllerType>: Router<Interactor
         _ = deinitDisposable.insert(disposable)
     }
 
-    deinit {
-        // TODO: get to this later
-//        LeakDetector.instance.expectDeallocate(object: viewControllable.uiviewController, inTime: LeakDefaultExpectationTime.viewDisappear)
+    isolated deinit {
+        LeakDetector.instance.expectDeallocate(object: viewControllable.uiviewController, inTime: LeakDefaultExpectationTime.viewDisappear)
     }
 }

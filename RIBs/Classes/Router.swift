@@ -214,20 +214,19 @@ open class Router<InteractorType>: Routing {
             detachChild(child)
         }
     }
-
-    deinit {
-        // TODO: get back to this
+    
+    isolated deinit {
+        interactable.deactivate()
         
-//        interactable.deactivate()
-//
-//        if !children.isEmpty {
-//            detachAllChildren()
-//        }
-//
-//        lifecycleSubject.onCompleted()
-//
-//        deinitDisposable.dispose()
-//
-//        LeakDetector.instance.expectDeallocate(object: interactable)
+        if !children.isEmpty {
+            detachAllChildren()
+        }
+        
+        lifecycleSubject.onCompleted()
+        
+        deinitDisposable.dispose()
+        
+        LeakDetector.instance.expectDeallocate(object: interactable)
+        
     }
 }
