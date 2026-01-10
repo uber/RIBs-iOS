@@ -17,6 +17,7 @@
 import UIKit
 
 /// The root `Router` of an application.
+@MainActor
 public protocol LaunchRouting: ViewableRouting {
 
     /// Launches the router tree.
@@ -26,6 +27,7 @@ public protocol LaunchRouting: ViewableRouting {
 }
 
 /// The application root router base class, that acts as the root of the router tree.
+@MainActor
 open class LaunchRouter<InteractorType, ViewControllerType>: ViewableRouter<InteractorType, ViewControllerType>, LaunchRouting {
 
     /// Initializer.

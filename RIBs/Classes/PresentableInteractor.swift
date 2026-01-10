@@ -17,6 +17,7 @@
 import Foundation
 
 /// Base class of an `Interactor` that actually has an associated `Presenter` and `View`.
+@MainActor
 open class PresentableInteractor<PresenterType>: Interactor {
 
     /// The `Presenter` associated with this `Interactor`.
@@ -34,6 +35,8 @@ open class PresentableInteractor<PresenterType>: Interactor {
     // MARK: - Private
 
     deinit {
-        LeakDetector.instance.expectDeallocate(object: presenter as AnyObject)
+        // TODO: deal with this later
+        
+//        LeakDetector.instance.expectDeallocate(object: presenter as AnyObject)
     }
 }

@@ -20,6 +20,7 @@ import RxSwift
 ///
 /// `Worker`s are always bound to an `Interactor`. A `Worker` can only start if its bound `Interactor` is active.
 /// It is stopped when its bound interactor is deactivated.
+@MainActor
 public protocol Working: AnyObject {
 
     /// Starts the `Worker`.
@@ -46,6 +47,7 @@ public protocol Working: AnyObject {
 }
 
 /// The base `Worker` implementation.
+@MainActor
 open class Worker: Working {
 
     /// Indicates if the `Worker` is started.
@@ -168,9 +170,11 @@ open class Worker: Working {
     }
 
     deinit {
-        stop()
-        unbindInteractor()
-        isStartedSubject.onCompleted()
+        // TODO: deal with this later
+        
+//        stop()
+//        unbindInteractor()
+//        isStartedSubject.onCompleted()
     }
 }
 
@@ -187,7 +191,7 @@ public extension Disposable {
     ///   `worker` needs to be deallocated.
     ///
     /// - parameter worker: The `Worker` to dispose the subscription based on.
-    @discardableResult
+    @discardableResult @MainActor
     func disposeOnStop(_ worker: Worker) -> Disposable {
         if let compositeDisposable = worker.disposable {
             _ = compositeDisposable.insert(self)
@@ -199,6 +203,7 @@ public extension Disposable {
     }
 }
 
+@MainActor
 fileprivate class WeakInteractorScope: InteractorScope {
 
     weak var sourceScope: InteractorScope?

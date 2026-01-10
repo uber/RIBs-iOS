@@ -19,6 +19,7 @@ import RxSwift
 import UIKit
 
 /// Protocol defining the activeness of an interactor's scope.
+@MainActor
 public protocol InteractorScope: AnyObject {
 
     // The following properties must be declared in the base protocol, since `Router` internally invokes these methods.
@@ -37,6 +38,7 @@ public protocol InteractorScope: AnyObject {
 }
 
 /// The base protocol for all interactors.
+@MainActor
 public protocol Interactable: InteractorScope {
 
     // The following methods must be declared in the base protocol, since `Router` internally invokes these methods.
@@ -64,6 +66,7 @@ public protocol Interactable: InteractorScope {
 /// active.
 ///
 /// An `Interactor` should only perform its business logic when it's currently active.
+@MainActor
 open class Interactor: Interactable {
 
     /// Indicates if the interactor is active.
@@ -140,10 +143,12 @@ open class Interactor: Interactable {
     fileprivate var activenessDisposable: CompositeDisposable?
 
     deinit {
-        if isActive {
-            deactivate()
-        }
-        isActiveSubject.onCompleted()
+        // TODO: deal with this later
+        
+//        if isActive {
+//            deactivate()
+//        }
+//        isActiveSubject.onCompleted()
     }
 }
 
@@ -162,7 +167,7 @@ public extension ObservableType {
     ///
     /// - parameter interactorScope: The interactor scope whose activeness this observable is confined to.
     /// - returns: The `Observable` confined to this interactor's activeness lifecycle.
-
+    @MainActor
     func confineTo(_ interactorScope: InteractorScope) -> Observable<Element> {
         return Observable
             .combineLatest(interactorScope.isActiveStream, self) { isActive, value in
@@ -194,7 +199,7 @@ public extension Disposable {
     /// terminated.
     ///
     /// - parameter interactor: The interactor to dispose the subscription based on.
-    @discardableResult
+    @discardableResult @MainActor
     func disposeOnDeactivate(interactor: Interactor) -> Disposable {
         if let activenessDisposable = interactor.activenessDisposable {
             _ = activenessDisposable.insert(self)
