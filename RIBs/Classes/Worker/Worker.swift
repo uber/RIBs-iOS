@@ -169,12 +169,10 @@ open class Worker: Working {
         interactorBindingDisposable = nil
     }
 
-    deinit {
-        // TODO: deal with this later
-        
-//        stop()
-//        unbindInteractor()
-//        isStartedSubject.onCompleted()
+    isolated deinit {
+        stop()
+        unbindInteractor()
+        isStartedSubject.onCompleted()
     }
 }
 
