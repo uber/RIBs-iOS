@@ -209,6 +209,7 @@ public extension Disposable {
     /// - note: This is the preferred method when trying to confine a subscription to the lifecycle of a `Workflow`.
     ///
     /// - parameter workflow: The workflow to dispose the subscription with.
+    @MainActor
     func disposeWith<ActionableItemType>(workflow: Workflow<ActionableItemType>) {
         _ = workflow.compositeDisposable.insert(self)
     }
@@ -223,6 +224,7 @@ public extension Disposable {
     ///
     /// - parameter workflow: The workflow to dispose the subscription with.
     @available(*, deprecated, renamed: "disposeWith(workflow:)")
+    @MainActor
     func disposeWith<ActionableItemType>(worflow: Workflow<ActionableItemType>) {
         disposeWith(workflow: worflow)
     }
