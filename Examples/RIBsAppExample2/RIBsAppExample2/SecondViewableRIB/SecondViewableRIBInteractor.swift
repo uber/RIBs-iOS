@@ -18,7 +18,7 @@ protocol SecondViewableRIBPresentable: Presentable {
 }
 
 protocol SecondViewableRIBListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+    func didComplete(_ secondViewableRIB: SecondViewableRIBInteractable)
 }
 
 final class SecondViewableRIBInteractor: PresentableInteractor<SecondViewableRIBPresentable>, SecondViewableRIBInteractable, SecondViewableRIBPresentableListener {
@@ -26,16 +26,21 @@ final class SecondViewableRIBInteractor: PresentableInteractor<SecondViewableRIB
     weak var router: SecondViewableRIBRouting?
     weak var listener: SecondViewableRIBListener?
 
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
-    override init(presenter: SecondViewableRIBPresentable) {
+    private let exampleWorker: ExampleWorker
+
+    init(presenter: SecondViewableRIBPresentable, exampleWorker: ExampleWorker) {
+        self.exampleWorker = exampleWorker
         super.init(presenter: presenter)
         presenter.listener = self
     }
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
+        exampleWorker.start(self)
+    }
+
+    func close() {
+        listener?.didComplete(self)
     }
 
     override func willResignActive() {

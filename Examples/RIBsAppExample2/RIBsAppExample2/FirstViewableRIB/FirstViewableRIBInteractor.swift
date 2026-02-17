@@ -7,6 +7,7 @@
 
 import RIBs
 import RxSwift
+import Foundation
 
 protocol FirstViewableRIBRouting: ViewableRouting {
     var firstViewableRIBViewController: FirstViewableRIBViewControllable { get }
@@ -27,10 +28,13 @@ final class FirstViewableRIBInteractor: PresentableInteractor<FirstViewableRIBPr
 
     weak var router: FirstViewableRIBRouting?
     weak var listener: FirstViewableRIBListener?
+    
+    private let actorService: ActorServicable
+    private let rxSwiftService: RxSwiftServicable
 
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
-    override init(presenter: FirstViewableRIBPresentable) {
+    init(presenter: FirstViewableRIBPresentable, actorService: ActorServicable, rxSwiftService: RxSwiftServicable) {
+        self.actorService = actorService
+        self.rxSwiftService = rxSwiftService
         super.init(presenter: presenter)
         presenter.listener = self
     }
@@ -41,10 +45,49 @@ final class FirstViewableRIBInteractor: PresentableInteractor<FirstViewableRIBPr
         Single<Int>
             .timer(.seconds(3), scheduler: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
             .observe(on: MainScheduler.instance)
-            .subscribe(onSuccess: { [weak self] _ in
-                self?.router?.routeToSecondViewableRIB()
+            .subscribe(onSuccess: {  _ in
+                self.printCurrentThread()
+                self.router?.routeToSecondViewableRIB()
+                self.printCurrentThread()
             })
             .disposeOnDeactivate(interactor: self)
+        
+        rxSwiftService.doWork()
+            .observe(on: MainScheduler.instance)
+            .subscribe(onSuccess: { value in
+                self.printCurrentThread()
+                print("RxSwiftService.doWork() completed with value: \(value)")
+                self.printCurrentThread()
+            })
+            .disposeOnDeactivate(interactor: self)
+        
+        Task {
+            await someAsyncWork()
+        }
+        
+        Task {
+            await someAsyncWork2()
+        }
+    }
+    
+    private func someAsyncWork() async {
+        printCurrentThread()
+        try? await Task.sleep(nanoseconds: 3_000_000_000) // 3 seconds
+        printCurrentThread()
+    }
+    
+    private func someAsyncWork2() async {
+        printCurrentThread()
+        await actorService.doWork()
+        printCurrentThread()
+    }
+    
+    private func printCurrentThread() {
+        print("Running on: \(Thread.current)")
+    }
+
+    func didComplete(_ secondViewableRIB: SecondViewableRIBInteractable) {
+        router?.routeAwayFromSecondViewableRIB()
     }
 
     override func willResignActive() {

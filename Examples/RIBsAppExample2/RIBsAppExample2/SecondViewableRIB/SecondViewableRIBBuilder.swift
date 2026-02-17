@@ -32,7 +32,8 @@ final class SecondViewableRIBBuilder: Builder<SecondViewableRIBDependency>, Seco
     func build(withListener listener: SecondViewableRIBListener) -> SecondViewableRIBRouting {
         let component = SecondViewableRIBComponent(dependency: dependency)
         let viewController = SecondViewableRIBViewController()
-        let interactor = SecondViewableRIBInteractor(presenter: viewController)
+        let exampleWorker = ExampleWorkerImp()
+        let interactor = SecondViewableRIBInteractor(presenter: viewController, exampleWorker: exampleWorker)
         interactor.listener = listener
         return SecondViewableRIBRouter(interactor: interactor, viewController: viewController)
     }

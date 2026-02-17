@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E71E73E2F4426FA002FD889 /* RIBs in Frameworks */ = {isa = PBXBuildFile; productRef = 7E71E73D2F4426FA002FD889 /* RIBs */; };
 		7EB78D4F2F12CC0000547345 /* RIBs in Frameworks */ = {isa = PBXBuildFile; productRef = 7EB78D4E2F12CC0000547345 /* RIBs */; };
+		7EFF41982F17D99D00B48704 /* RIBs in Frameworks */ = {isa = PBXBuildFile; productRef = 7EFF41972F17D99D00B48704 /* RIBs */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,7 +58,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EFF41982F17D99D00B48704 /* RIBs in Frameworks */,
 				7EB78D4F2F12CC0000547345 /* RIBs in Frameworks */,
+				7E71E73E2F4426FA002FD889 /* RIBs in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,6 +113,8 @@
 			name = RIBsAppExample2;
 			packageProductDependencies = (
 				7EB78D4E2F12CC0000547345 /* RIBs */,
+				7EFF41972F17D99D00B48704 /* RIBs */,
+				7E71E73D2F4426FA002FD889 /* RIBs */,
 			);
 			productName = RIBsAppExample2;
 			productReference = 7EB78D192F12CB3800547345 /* RIBsAppExample2.app */;
@@ -166,7 +172,7 @@
 			mainGroup = 7EB78D102F12CB3800547345;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				7EB78D4D2F12CC0000547345 /* XCLocalSwiftPackageReference "../../../RIBs-iOS" */,
+				7E71E73C2F4426FA002FD889 /* XCLocalSwiftPackageReference "../../../RIBs-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7EB78D1A2F12CB3800547345 /* Products */;
@@ -247,8 +253,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_STRICT_CONCURRENCY = minimal;
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -278,8 +284,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_STRICT_CONCURRENCY = minimal;
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -476,14 +482,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		7EB78D4D2F12CC0000547345 /* XCLocalSwiftPackageReference "../../../RIBs-iOS" */ = {
+		7E71E73C2F4426FA002FD889 /* XCLocalSwiftPackageReference "../../../RIBs-iOS" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = "../../../RIBs-iOS";
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7E71E73D2F4426FA002FD889 /* RIBs */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RIBs;
+		};
 		7EB78D4E2F12CC0000547345 /* RIBs */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RIBs;
+		};
+		7EFF41972F17D99D00B48704 /* RIBs */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RIBs;
 		};

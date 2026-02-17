@@ -14,6 +14,14 @@ protocol FirstViewableRIBDependency: Dependency {
 
 final class FirstViewableRIBComponent: Component<FirstViewableRIBDependency>, SecondViewableRIBDependency {
     
+    var actorService: ActorServicable {
+        ActorService()
+    }
+    
+    var rxSwiftService: RxSwiftServicable {
+        RxSwiftService()
+    }
+    
     var secondViewableRIBBuilder: SecondViewableRIBBuildable {
         SecondViewableRIBBuilder(dependency: self)
     }
@@ -34,7 +42,7 @@ final class FirstViewableRIBBuilder: Builder<FirstViewableRIBDependency>, FirstV
     func build(withListener listener: FirstViewableRIBListener) -> FirstViewableRIBRouting {
         let component = FirstViewableRIBComponent(dependency: dependency)
         let viewController = FirstViewableRIBViewController()
-        let interactor = FirstViewableRIBInteractor(presenter: viewController)
+        let interactor = FirstViewableRIBInteractor(presenter: viewController, actorService: component.actorService, rxSwiftService: component.rxSwiftService)
         interactor.listener = listener
         return FirstViewableRIBRouter(interactor: interactor, viewController: viewController, secondViewableRIBBuilder: component.secondViewableRIBBuilder)
     }

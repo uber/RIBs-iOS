@@ -10,18 +10,31 @@ import RxSwift
 import UIKit
 
 protocol SecondViewableRIBPresentableListener: AnyObject {
-    // TODO: Declare properties and methods that the view controller can invoke to perform
-    // business logic, such as signIn(). This protocol is implemented by the corresponding
-    // interactor class.
+    func close()
 }
 
 final class SecondViewableRIBViewController: UIViewController, SecondViewableRIBPresentable, SecondViewableRIBViewControllable {
 
     weak var listener: SecondViewableRIBPresentableListener?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         view.backgroundColor = .blue
+        setupBackButton()
+    }
+
+    private func setupBackButton() {
+        let backButton = UIBarButtonItem(
+            image: UIImage(systemName: "chevron.left"),
+            style: .plain,
+            target: self,
+            action: #selector(didTapBack)
+        )
+        navigationItem.leftBarButtonItem = backButton
+    }
+
+    @objc private func didTapBack() {
+        listener?.close()
     }
 }
