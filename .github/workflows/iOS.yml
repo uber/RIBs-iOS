@@ -29,7 +29,7 @@ jobs:
             -workspace RIBs.xcworkspace \
             -scheme RIBs-Example \
             -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=18.0' \
+            -destination 'platform=iOS Simulator,name=iPhone SE (3rd generation),OS=18.5' \
             -enableCodeCoverage YES \
             clean test
             
