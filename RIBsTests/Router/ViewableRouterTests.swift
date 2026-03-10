@@ -18,6 +18,7 @@ final class ViewControllerMock: ViewControllable {
     }
 }
 
+@MainActor
 final class ViewableRouterTests: XCTestCase {
 
     private var router: ViewableRouter<PresentableInteractor<PresenterMock>, ViewControllerMock>!
@@ -42,7 +43,7 @@ final class ViewableRouterTests: XCTestCase {
         XCTAssertEqual(leakDetectorMock.expectViewControllerDisappearCallCount, 1)
     }
 
-    func test_deinit_triggers_leakDetection() {
+    func test_deinit_triggers_leakDetection() async {
         // given
         let interactor = PresentableInteractor(presenter: PresenterMock())
         let viewController = ViewControllerMock()

@@ -13,6 +13,7 @@ protocol TestPresenter {}
 
 final class PresenterMock: TestPresenter {}
 
+@MainActor
 final class PresentableInteractorTests: XCTestCase {
     
     private var interactor: PresentableInteractor<TestPresenter>!
@@ -22,7 +23,7 @@ final class PresentableInteractorTests: XCTestCase {
     
     }
     
-    func test_deinit_doesNotLeakPresenter() {
+    func test_deinit_doesNotLeakPresenter() async {
         // given
         let presenterMock = PresenterMock()
         let disposeBag = DisposeBag()

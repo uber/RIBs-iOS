@@ -19,11 +19,11 @@ jobs:
         run: gem install cocoapods
         
       - name: Install pod dependencies
-        working-directory: ./Example
+        working-directory: ./Examples/Example1
         run: pod install || pod install --repo-update
         
       - name: Run tests with coverage
-        working-directory: ./Example
+        working-directory: ./Examples/Example1
         run: |
           xcodebuild \
             -workspace RIBs.xcworkspace \
