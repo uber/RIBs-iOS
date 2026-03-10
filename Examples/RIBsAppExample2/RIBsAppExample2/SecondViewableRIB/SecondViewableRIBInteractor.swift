@@ -45,6 +45,11 @@ final class SecondViewableRIBInteractor: PresentableInteractor<SecondViewableRIB
 
     override func willResignActive() {
         super.willResignActive()
-        // TODO: Pause any business logic.
+        
+        print("SecondViewableRIBInteractor willResignActive")
+    }
+    
+    func sendData(_ interactor: any ThirdHeadlessRIBInteractable) {
+        print("data received in the SecondViewableRIBInteractor from ThirdHeadlessRIBInteractable")
     }
 }

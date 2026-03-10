@@ -12,9 +12,19 @@ protocol SecondViewableRIBDependency: Dependency {
     // created by this RIB.
 }
 
-final class SecondViewableRIBComponent: Component<SecondViewableRIBDependency> {
+final class SecondViewableRIBComponent: Component<SecondViewableRIBDependency>, ThirdHeadlessRIBDependency {
 
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+    var thirdHeadlessRIBBuilder: ThirdHeadlessRIBBuildable {
+        ThirdHeadlessRIBBuilder(dependency: self)
+    }
+    
+    var viewController: SecondViewableRIBPresentable & SecondViewableRIBViewControllable {
+        SecondViewableRIBViewController()
+    }
+    
+    var thirdHeadlessRIBViewController: any ThirdHeadlessRIBViewControllable {
+        viewController
+    }
 }
 
 // MARK: - Builder
@@ -31,10 +41,10 @@ final class SecondViewableRIBBuilder: Builder<SecondViewableRIBDependency>, Seco
 
     func build(withListener listener: SecondViewableRIBListener) -> SecondViewableRIBRouting {
         let component = SecondViewableRIBComponent(dependency: dependency)
-        let viewController = SecondViewableRIBViewController()
+        let viewController = component.viewController
         let exampleWorker = ExampleWorkerImp()
         let interactor = SecondViewableRIBInteractor(presenter: viewController, exampleWorker: exampleWorker)
         interactor.listener = listener
-        return SecondViewableRIBRouter(interactor: interactor, viewController: viewController)
+        return SecondViewableRIBRouter(interactor: interactor, viewController: viewController, thirdHeadlessRIBBuilder: component.thirdHeadlessRIBBuilder)
     }
 }
