@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7E71E73E2F4426FA002FD889 /* RIBs in Frameworks */ = {isa = PBXBuildFile; productRef = 7E71E73D2F4426FA002FD889 /* RIBs */; };
-		7EA3A6CE2F61EE4A00D01810 /* RIBs in Frameworks */ = {isa = PBXBuildFile; productRef = 7EA3A6CD2F61EE4A00D01810 /* RIBs */; };
+		7EA3A6D62F62251D00D01810 /* RIBs in Frameworks */ = {isa = PBXBuildFile; productRef = 7EA3A6D52F62251D00D01810 /* RIBs */; };
 		7EB78D4F2F12CC0000547345 /* RIBs in Frameworks */ = {isa = PBXBuildFile; productRef = 7EB78D4E2F12CC0000547345 /* RIBs */; };
 		7EFF41982F17D99D00B48704 /* RIBs in Frameworks */ = {isa = PBXBuildFile; productRef = 7EFF41972F17D99D00B48704 /* RIBs */; };
 /* End PBXBuildFile section */
@@ -59,7 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7EA3A6CE2F61EE4A00D01810 /* RIBs in Frameworks */,
+				7EA3A6D62F62251D00D01810 /* RIBs in Frameworks */,
 				7EFF41982F17D99D00B48704 /* RIBs in Frameworks */,
 				7EB78D4F2F12CC0000547345 /* RIBs in Frameworks */,
 				7E71E73E2F4426FA002FD889 /* RIBs in Frameworks */,
@@ -117,7 +117,7 @@
 				7EB78D4E2F12CC0000547345 /* RIBs */,
 				7EFF41972F17D99D00B48704 /* RIBs */,
 				7E71E73D2F4426FA002FD889 /* RIBs */,
-				7EA3A6CD2F61EE4A00D01810 /* RIBs */,
+				7EA3A6D52F62251D00D01810 /* RIBs */,
 			);
 			productName = RIBsAppExample2;
 			productReference = 7EB78D192F12CB3800547345 /* RIBsAppExample2.app */;
@@ -175,7 +175,7 @@
 			mainGroup = 7EB78D102F12CB3800547345;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				7EA3A6CC2F61EE4A00D01810 /* XCRemoteSwiftPackageReference "RIBs-iOS" */,
+				7EA3A6D42F62251D00D01810 /* XCLocalSwiftPackageReference "../../../RIBs-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7EB78D1A2F12CB3800547345 /* Products */;
@@ -254,10 +254,10 @@
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = io.mobileengineer.RIBsAppExample2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_STRICT_CONCURRENCY = minimal;
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -285,10 +285,10 @@
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = io.mobileengineer.RIBsAppExample2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_STRICT_CONCURRENCY = minimal;
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -484,25 +484,20 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		7EA3A6CC2F61EE4A00D01810 /* XCRemoteSwiftPackageReference "RIBs-iOS" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/uber/RIBs-iOS.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		7EA3A6D42F62251D00D01810 /* XCLocalSwiftPackageReference "../../../RIBs-iOS" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../../RIBs-iOS";
 		};
-/* End XCRemoteSwiftPackageReference section */
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		7E71E73D2F4426FA002FD889 /* RIBs */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RIBs;
 		};
-		7EA3A6CD2F61EE4A00D01810 /* RIBs */ = {
+		7EA3A6D52F62251D00D01810 /* RIBs */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7EA3A6CC2F61EE4A00D01810 /* XCRemoteSwiftPackageReference "RIBs-iOS" */;
 			productName = RIBs;
 		};
 		7EB78D4E2F12CC0000547345 /* RIBs */ = {
