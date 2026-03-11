@@ -19,7 +19,7 @@ final class SecondViewableRIBComponent: Component<SecondViewableRIBDependency>, 
     }
     
     var viewController: SecondViewableRIBPresentable & SecondViewableRIBViewControllable {
-        SecondViewableRIBViewController()
+        shared { SecondViewableRIBViewController() }
     }
     
     var thirdHeadlessRIBViewController: any ThirdHeadlessRIBViewControllable {

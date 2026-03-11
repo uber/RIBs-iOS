@@ -11,6 +11,8 @@ import RxSwift
 protocol ThirdHeadlessRIBRouting: Routing {
     func cleanupViews()
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
+    func routeToFourthRIB()
+    func routeAwayFromFourthRIB()
 }
 
 protocol ThirdHeadlessRIBListener: AnyObject {
@@ -38,6 +40,7 @@ final class ThirdHeadlessRIBInteractor: Interactor, ThirdHeadlessRIBInteractable
             .observe(on: MainScheduler.instance)
             .subscribe(onSuccess: {  _ in
                 self.listener?.sendData(self)
+                self.router?.routeToFourthRIB()
             })
             .disposeOnDeactivate(interactor: self)
     }

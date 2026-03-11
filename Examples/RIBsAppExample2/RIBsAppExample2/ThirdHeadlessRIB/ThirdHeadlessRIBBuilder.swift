@@ -14,13 +14,15 @@ protocol ThirdHeadlessRIBDependency: Dependency {
     // created by this RIB.
 }
 
-final class ThirdHeadlessRIBComponent: Component<ThirdHeadlessRIBDependency> {
+final class ThirdHeadlessRIBComponent: Component<ThirdHeadlessRIBDependency>, FourthViewableRIBDependency {
 
     fileprivate var thirdHeadlessRIBViewController: ThirdHeadlessRIBViewControllable {
         return dependency.thirdHeadlessRIBViewController
     }
 
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+    fileprivate var fourthViewableRIBBuilder: FourthViewableRIBBuildable {
+        FourthViewableRIBBuilder(dependency: self)
+    }
 }
 
 // MARK: - Builder
@@ -39,6 +41,6 @@ final class ThirdHeadlessRIBBuilder: Builder<ThirdHeadlessRIBDependency>, ThirdH
         let component = ThirdHeadlessRIBComponent(dependency: dependency)
         let interactor = ThirdHeadlessRIBInteractor()
         interactor.listener = listener
-        return ThirdHeadlessRIBRouter(interactor: interactor, viewController: component.thirdHeadlessRIBViewController)
+        return ThirdHeadlessRIBRouter(interactor: interactor, viewController: component.thirdHeadlessRIBViewController, fourthViewableRIBBuilder: component.fourthViewableRIBBuilder)
     }
 }
