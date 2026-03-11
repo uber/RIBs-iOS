@@ -12,7 +12,7 @@ protocol RootDependency: Dependency {
     // created by this RIB.
 }
 
-final class RootComponent: Component<RootDependency>, FirstViewableRIBDependency  {
+final class RootComponent: Component<RootDependency>, FirstViewableRIBDependency {
 
     var firstViewableRIBBuilder: FirstViewableRIBBuildable {
         FirstViewableRIBBuilder(dependency: self)
@@ -21,8 +21,13 @@ final class RootComponent: Component<RootDependency>, FirstViewableRIBDependency
 
 // MARK: - Builder
 
+struct RootBuildResult {
+    let launchRouter: LaunchRouting
+    let urlHandler: UrlHandler
+}
+
 protocol RootBuildable: Buildable {
-    func build() -> LaunchRouting
+    func build() -> RootBuildResult
 }
 
 final class RootBuilder: Builder<RootDependency>, RootBuildable {
@@ -31,10 +36,11 @@ final class RootBuilder: Builder<RootDependency>, RootBuildable {
         super.init(dependency: dependency)
     }
 
-    func build() -> LaunchRouting {
+    func build() -> RootBuildResult {
         let component = RootComponent(dependency: dependency)
         let viewController = RootViewController()
         let interactor = RootInteractor(presenter: viewController)
-        return RootRouter(interactor: interactor, viewController: viewController, firstViewableRIBBuilder: component.firstViewableRIBBuilder)
+        let launchRouter = RootRouter(interactor: interactor, viewController: viewController, firstViewableRIBBuilder: component.firstViewableRIBBuilder)
+        return RootBuildResult(launchRouter: launchRouter, urlHandler: interactor)
     }
 }

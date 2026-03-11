@@ -7,9 +7,10 @@
 
 import RIBs
 import RxSwift
+import Foundation
 
 protocol RootRouting: ViewableRouting {
-    func routeToFirstViewableRIB()
+    func routeToFirstViewableRIB() -> FirstViewableRIBActionableItem
     func routeAwayFromFirstViewableRIB()
 }
 
@@ -22,10 +23,12 @@ protocol RootListener: AnyObject {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
 }
 
-final class RootInteractor: PresentableInteractor<RootPresentable>, RootInteractable, RootPresentableListener {
+final class RootInteractor: PresentableInteractor<RootPresentable>, RootInteractable, RootPresentableListener, UrlHandler {
 
     weak var router: RootRouting?
     weak var listener: RootListener?
+
+    private let firstViewableRIBActionableItemSubject = ReplaySubject<FirstViewableRIBActionableItem>.create(bufferSize: 1)
 
     // TODO: Add additional dependencies to constructor. Do not perform any logic
     // in constructor.
@@ -36,12 +39,32 @@ final class RootInteractor: PresentableInteractor<RootPresentable>, RootInteract
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        
-        router?.routeToFirstViewableRIB()
+
+        if let firstItem = router?.routeToFirstViewableRIB() {
+            firstViewableRIBActionableItemSubject.onNext(firstItem)
+        }
     }
 
     override func willResignActive() {
         super.willResignActive()
         // TODO: Pause any business logic.
+    }
+
+    // MARK: - RootActionableItem
+
+    func waitForFirstViewableRIB() -> Observable<(FirstViewableRIBActionableItem, ())> {
+        return firstViewableRIBActionableItemSubject.map { ($0, ()) }
+    }
+
+    // MARK: - UrlHandler
+
+    func handle(_ url: URL) {
+        switch url.path {
+        case "/example-deeplink":
+            let workflow = OpenFourthViewableRIBWorkflow()
+            workflow.subscribe(self).disposeOnDeactivate(interactor: self)
+        default:
+            break
+        }
     }
 }

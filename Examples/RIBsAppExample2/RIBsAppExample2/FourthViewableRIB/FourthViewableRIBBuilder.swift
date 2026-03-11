@@ -20,7 +20,7 @@ final class FourthViewableRIBComponent: Component<FourthViewableRIBDependency> {
 // MARK: - Builder
 
 protocol FourthViewableRIBBuildable: Buildable {
-    func build(withListener listener: FourthViewableRIBListener) -> FourthViewableRIBRouting
+    func build(withListener listener: FourthViewableRIBListener) -> (routing: FourthViewableRIBRouting, actionableItem: FourthViewableRIBActionableItem)
 }
 
 final class FourthViewableRIBBuilder: Builder<FourthViewableRIBDependency>, FourthViewableRIBBuildable {
@@ -29,12 +29,13 @@ final class FourthViewableRIBBuilder: Builder<FourthViewableRIBDependency>, Four
         super.init(dependency: dependency)
     }
 
-    func build(withListener listener: FourthViewableRIBListener) -> FourthViewableRIBRouting {
+    func build(withListener listener: FourthViewableRIBListener) -> (routing: FourthViewableRIBRouting, actionableItem: FourthViewableRIBActionableItem) {
         let component = FourthViewableRIBComponent(dependency: dependency)
         let viewController = FourthViewableRIBViewController()
         let presenter = FourthViewableRIBPresenter(viewController: viewController)
         let interactor = FourthViewableRIBInteractor(presenter: presenter)
         interactor.listener = listener
-        return FourthViewableRIBRouter(interactor: interactor, viewController: viewController)
+        let router = FourthViewableRIBRouter(interactor: interactor, viewController: viewController)
+        return (routing: router, actionableItem: interactor)
     }
 }

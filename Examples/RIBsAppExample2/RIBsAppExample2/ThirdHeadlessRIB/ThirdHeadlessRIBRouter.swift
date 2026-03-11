@@ -41,7 +41,7 @@ final class ThirdHeadlessRIBRouter: Router<ThirdHeadlessRIBInteractable>, ThirdH
 
     
     func routeToFourthRIB() {
-        let fourthViewableRIBRouter = fourthViewableRIBBuilder.build(withListener: interactor)
+        let (fourthViewableRIBRouter, fourthViewableRIBInteractor) = fourthViewableRIBBuilder.build(withListener: interactor)
         self.fourthViewableRIBRouter = fourthViewableRIBRouter
         let fourthViewableRIBViewControllable = fourthViewableRIBRouter.viewControllable
         attachChild(fourthViewableRIBRouter)

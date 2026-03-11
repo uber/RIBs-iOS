@@ -7,7 +7,7 @@
 
 import RIBs
 
-protocol FirstViewableRIBInteractable: Interactable, SecondViewableRIBListener {
+protocol FirstViewableRIBInteractable: Interactable, FirstViewableRIBActionableItem, SecondViewableRIBListener, FourthViewableRIBListener {
     var router: FirstViewableRIBRouting? { get set }
     var listener: FirstViewableRIBListener? { get set }
 }
@@ -21,8 +21,12 @@ final class FirstViewableRIBRouter: ViewableRouter<FirstViewableRIBInteractable,
     private let secondViewableRIBBuilder: SecondViewableRIBBuildable
     private var secondViewableRIBRouter: SecondViewableRIBRouting?
 
-    init(interactor: FirstViewableRIBInteractable, viewController: FirstViewableRIBViewControllable, secondViewableRIBBuilder: SecondViewableRIBBuildable) {
+    private let fourthViewableRIBBuilder: FourthViewableRIBBuildable
+    private var fourthViewableRIBRouter: FourthViewableRIBRouting?
+
+    init(interactor: FirstViewableRIBInteractable, viewController: FirstViewableRIBViewControllable, secondViewableRIBBuilder: SecondViewableRIBBuildable, fourthViewableRIBBuilder: FourthViewableRIBBuildable) {
         self.secondViewableRIBBuilder = secondViewableRIBBuilder
+        self.fourthViewableRIBBuilder = fourthViewableRIBBuilder
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
@@ -44,6 +48,22 @@ final class FirstViewableRIBRouter: ViewableRouter<FirstViewableRIBInteractable,
             self.secondViewableRIBRouter = nil
             viewController.uiviewController.navigationController?.popToViewController(viewController.uiviewController, animated: true)
             detachChild(secondViewableRIBRouter)
+        }
+    }
+
+    func routeToFourthViewableRIB() -> FourthViewableRIBActionableItem {
+        let (fourthViewableRIBRouter, actionableItem) = fourthViewableRIBBuilder.build(withListener: interactor)
+        self.fourthViewableRIBRouter = fourthViewableRIBRouter
+        attachChild(fourthViewableRIBRouter)
+        viewController.uiviewController.navigationController?.pushViewController(fourthViewableRIBRouter.viewControllable.uiviewController, animated: true)
+        return actionableItem
+    }
+
+    func routeAwayFromFourthViewableRIB() {
+        if let fourthViewableRIBRouter = fourthViewableRIBRouter {
+            self.fourthViewableRIBRouter = nil
+            viewController.uiviewController.navigationController?.popToViewController(viewController.uiviewController, animated: true)
+            detachChild(fourthViewableRIBRouter)
         }
     }
 }

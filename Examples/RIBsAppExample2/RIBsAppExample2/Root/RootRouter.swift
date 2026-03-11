@@ -7,7 +7,7 @@
 
 import RIBs
 
-protocol RootInteractable: Interactable, FirstViewableRIBListener {
+protocol RootInteractable: Interactable, FirstViewableRIBListener, RootActionableItem {
     var router: RootRouting? { get set }
     var listener: RootListener? { get set }
 }
@@ -18,7 +18,7 @@ protocol RootViewControllable: ViewControllable {
 }
 
 final class RootRouter: LaunchRouter<RootInteractable, RootViewControllable>, RootRouting {
-    
+
     private let firstViewableRIBBuilder: FirstViewableRIBBuildable
     private var firstViewableRIBRouter: FirstViewableRIBRouting?
 
@@ -27,15 +27,16 @@ final class RootRouter: LaunchRouter<RootInteractable, RootViewControllable>, Ro
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
     }
-    
-    func routeToFirstViewableRIB() {
-        let firstViewableRIBRouter = firstViewableRIBBuilder.build(withListener: interactor)
+
+    func routeToFirstViewableRIB() -> FirstViewableRIBActionableItem {
+        let (firstViewableRIBRouter, actionableItem) = firstViewableRIBBuilder.build(withListener: interactor)
         self.firstViewableRIBRouter = firstViewableRIBRouter
         let firstViewableRIBViewController = firstViewableRIBRouter.firstViewableRIBViewController
         viewController.embedMainView(firstViewableRIBViewController)
         attachChild(firstViewableRIBRouter)
+        return actionableItem
     }
-    
+
     func routeAwayFromFirstViewableRIB() {
         if let firstViewableRIBRouter = firstViewableRIBRouter {
             self.firstViewableRIBRouter = nil

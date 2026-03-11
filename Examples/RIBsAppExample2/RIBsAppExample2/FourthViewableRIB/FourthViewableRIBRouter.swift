@@ -7,7 +7,7 @@
 
 import RIBs
 
-protocol FourthViewableRIBInteractable: Interactable {
+protocol FourthViewableRIBInteractable: Interactable, FourthViewableRIBActionableItem {
     var router: FourthViewableRIBRouting? { get set }
     var listener: FourthViewableRIBListener? { get set }
 }

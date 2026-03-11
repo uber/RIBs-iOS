@@ -9,10 +9,13 @@ import RIBs
 import RxSwift
 import Foundation
 
+
 protocol FirstViewableRIBRouting: ViewableRouting {
     var firstViewableRIBViewController: FirstViewableRIBViewControllable { get }
     func routeToSecondViewableRIB()
     func routeAwayFromSecondViewableRIB()
+    func routeToFourthViewableRIB() -> FourthViewableRIBActionableItem
+    func routeAwayFromFourthViewableRIB()
 }
 
 protocol FirstViewableRIBPresentable: Presentable {
@@ -88,6 +91,15 @@ final class FirstViewableRIBInteractor: PresentableInteractor<FirstViewableRIBPr
 
     func didComplete(_ secondViewableRIB: SecondViewableRIBInteractable) {
         router?.routeAwayFromSecondViewableRIB()
+    }
+
+    // MARK: - FirstViewableRIBActionableItem
+
+    func openFourthViewableRIB() -> Observable<(FourthViewableRIBActionableItem, ())> {
+        guard let fourthItem = router?.routeToFourthViewableRIB() else {
+            return .empty()
+        }
+        return .just((fourthItem, ()))
     }
 
     override func willResignActive() {
