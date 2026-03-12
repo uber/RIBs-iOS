@@ -16,6 +16,8 @@ protocol FirstViewableRIBRouting: ViewableRouting {
     func routeAwayFromSecondViewableRIB()
     func routeToFourthViewableRIB() -> FourthViewableRIBActionableItem
     func routeAwayFromFourthViewableRIB()
+    func routeToMainRIB(userSession: UserSession)
+    func routeAwayFromMainRIB()
 }
 
 protocol FirstViewableRIBPresentable: Presentable {
@@ -34,10 +36,12 @@ final class FirstViewableRIBInteractor: PresentableInteractor<FirstViewableRIBPr
     
     private let actorService: ActorServicable
     private let rxSwiftService: RxSwiftServicable
+    private let authService: AuthServiceType
 
-    init(presenter: FirstViewableRIBPresentable, actorService: ActorServicable, rxSwiftService: RxSwiftServicable) {
+    init(presenter: FirstViewableRIBPresentable, actorService: ActorServicable, rxSwiftService: RxSwiftServicable, authService: AuthServiceType) {
         self.actorService = actorService
         self.rxSwiftService = rxSwiftService
+        self.authService = authService
         super.init(presenter: presenter)
         presenter.listener = self
     }
@@ -91,6 +95,33 @@ final class FirstViewableRIBInteractor: PresentableInteractor<FirstViewableRIBPr
 
     func didComplete(_ secondViewableRIB: SecondViewableRIBInteractable) {
         router?.routeAwayFromSecondViewableRIB()
+    }
+
+    // MARK: - FirstViewableRIBPresentableListener
+
+    func login() {
+        Single<UserSession>.create { [authService] single in
+            Task {
+                do {
+                    let session = try await authService.login()
+                    single(.success(session))
+                } catch {
+                    single(.failure(error))
+                }
+            }
+            return Disposables.create()
+        }
+        .observe(on: MainScheduler.instance)
+        .subscribe(onSuccess: { session in
+            self.router?.routeToMainRIB(userSession: session)
+        })
+        .disposeOnDeactivate(interactor: self)
+    }
+
+    // MARK: - MainRIBListener
+    
+    func didCompleteWithLogout(_ interactor: any MainRIBInteractable) {
+        router?.routeAwayFromMainRIB()
     }
 
     // MARK: - FirstViewableRIBActionableItem

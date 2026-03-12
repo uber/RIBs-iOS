@@ -12,7 +12,7 @@ protocol FirstViewableRIBDependency: Dependency {
     // created by this RIB.
 }
 
-final class FirstViewableRIBComponent: Component<FirstViewableRIBDependency>, SecondViewableRIBDependency, FourthViewableRIBDependency {
+final class FirstViewableRIBComponent: Component<FirstViewableRIBDependency>, SecondViewableRIBDependency, FourthViewableRIBDependency, MainRIBDependency {
 
     var actorService: ActorServicable {
         ActorService()
@@ -28,6 +28,16 @@ final class FirstViewableRIBComponent: Component<FirstViewableRIBDependency>, Se
 
     var fourthViewableRIBBuilder: FourthViewableRIBBuildable {
         FourthViewableRIBBuilder(dependency: self)
+    }
+
+    var authService: AuthServiceType {
+        shared { FakeAuthService() }
+    }
+
+    var mainRIBBuilder: MainRIBBuildable {
+        MainRIBBuilder { (userSession: UserSession) -> MainRIBComponent in
+            MainRIBComponent(dependency: self, userSession: userSession)
+        }
     }
 }
 
@@ -46,9 +56,9 @@ final class FirstViewableRIBBuilder: Builder<FirstViewableRIBDependency>, FirstV
     func build(withListener listener: FirstViewableRIBListener) -> (routing: FirstViewableRIBRouting, actionableItem: FirstViewableRIBActionableItem) {
         let component = FirstViewableRIBComponent(dependency: dependency)
         let viewController = FirstViewableRIBViewController()
-        let interactor = FirstViewableRIBInteractor(presenter: viewController, actorService: component.actorService, rxSwiftService: component.rxSwiftService)
+        let interactor = FirstViewableRIBInteractor(presenter: viewController, actorService: component.actorService, rxSwiftService: component.rxSwiftService, authService: component.authService)
         interactor.listener = listener
-        let router = FirstViewableRIBRouter(interactor: interactor, viewController: viewController, secondViewableRIBBuilder: component.secondViewableRIBBuilder, fourthViewableRIBBuilder: component.fourthViewableRIBBuilder)
+        let router = FirstViewableRIBRouter(interactor: interactor, viewController: viewController, secondViewableRIBBuilder: component.secondViewableRIBBuilder, fourthViewableRIBBuilder: component.fourthViewableRIBBuilder, mainRIBBuilder: component.mainRIBBuilder)
         return (routing: router, actionableItem: interactor)
     }
 }
