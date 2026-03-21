@@ -25,6 +25,8 @@ To get more hands on with RIBs, we have written a [series of tutorials](https://
 
 To read about the backstory on why we created RIBs, see [this blog post](https://www.uber.com/blog/new-rider-app-architecture/) we wrote when releasing RIBs in production the first time and see [this short video](https://www.youtube.com/watch?v=Q5cTT0M0YXg) where we discussed how the RIBs architecture works.
 
+If you are adopting Swift 6 strict concurrency in a project that uses RIBs, see the [Swift 6 Strict Concurrency Migration Guide](SWIFT6_STRICT_CONCURRENCY_MIGRATION.md).
+
 #### What is the difference between RIBs and MV*/VIPER?
 
 MVC, MVP, MVI, MVVM and VIPER are architecture patterns. RIBs is a framework. What differentiates RIBs from frameworks based on MV*/VIPER is:
