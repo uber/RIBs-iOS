@@ -9,7 +9,11 @@ enum MigratorError: Error, CustomStringConvertible {
     }
 }
 
-final class IndexStoreService {
+protocol IndexStoreProviding {
+    func isRxSwiftCall(file: String, line: Int, column: Int, debugFile: String?) -> Bool
+}
+
+final class IndexStoreService: IndexStoreProviding {
     private let db: IndexStoreDB
 
     init(storePath: String) throws {

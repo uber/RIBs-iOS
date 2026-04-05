@@ -4,7 +4,7 @@ import SwiftSyntax
 final class RxSendableRewriter: SyntaxRewriter {
     let filePath: String
     let locationConverter: SourceLocationConverter
-    let indexService: IndexStoreService
+    let indexService: IndexStoreProviding
 
     // Operators whose closure parameters need @Sendable.
     // These are operators that *store* the closure and call it from RxSwift's internal
@@ -48,7 +48,7 @@ final class RxSendableRewriter: SyntaxRewriter {
 
     var debugFile: String?
 
-    init(filePath: String, locationConverter: SourceLocationConverter, indexService: IndexStoreService, debugFile: String? = nil) {
+    init(filePath: String, locationConverter: SourceLocationConverter, indexService: IndexStoreProviding, debugFile: String? = nil) {
         self.filePath = filePath
         self.locationConverter = locationConverter
         self.indexService = indexService
@@ -127,6 +127,9 @@ final class RxSendableRewriter: SyntaxRewriter {
     private func injectSendable(into closure: ClosureExprSyntax) -> ClosureExprSyntax? {
         if let sig = closure.signature {
             guard !hasSendable(sig.attributes) else { return nil }
+            
+            // If there's a capture list, @Sendable must go AFTER it.
+            // attributes in ClosureSignatureSyntax are technically after capture list but before parameters.
             let newSig = sig.with(\.attributes, prependSendable(to: sig.attributes))
             return closure.with(\.signature, newSig)
         } else {
