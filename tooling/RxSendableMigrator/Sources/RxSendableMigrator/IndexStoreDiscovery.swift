@@ -10,8 +10,8 @@ struct IndexStoreDiscovery {
     /// 2. Prefer entries whose `info.plist` WorkspacePath is related to `sourceDir`
     ///    (i.e. the workspace lives inside or contains `sourceDir`).
     /// 3. Fall back to the most-recently-modified entry that has a valid DataStore.
-    static func findIndexStorePath(for sourceDir: String) -> String? {
-        let derivedDataURL = FileManager.default.homeDirectoryForCurrentUser
+    static func findIndexStorePath(for sourceDir: String, derivedDataURL: URL? = nil) -> String? {
+        let derivedDataURL = derivedDataURL ?? FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent("Library/Developer/Xcode/DerivedData")
 
         guard let entries = try? FileManager.default.contentsOfDirectory(
