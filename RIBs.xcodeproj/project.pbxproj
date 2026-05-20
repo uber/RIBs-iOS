@@ -33,6 +33,9 @@
 		AFB7D4031FC81C8F00045D2B /* Foundation+ExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82F6731FC81B5F006DF7BC /* Foundation+ExtensionsTests.swift */; };
 		AFB7D4051FC81D6100045D2B /* LaunchRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFB7D4041FC81D6100045D2B /* LaunchRouterTests.swift */; };
 		BF5FC0F122808377004235F1 /* RxRelay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5FC0F022808377004235F1 /* RxRelay.framework */; };
+		C0A100012B10000100A10001 /* Observable+AsyncSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100032B10000100A10001 /* Observable+AsyncSequence.swift */; };
+		C0A100022B10000100A10001 /* Lifecycle+AsyncSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100042B10000100A10001 /* Lifecycle+AsyncSequence.swift */; };
+		C0A100062B10000100A10001 /* AsyncStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100052B10000100A10001 /* AsyncStreamTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +78,9 @@
 		AF9966B11FC40D7E00CAEAA2 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		AFB7D4041FC81D6100045D2B /* LaunchRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchRouterTests.swift; sourceTree = "<group>"; };
 		BF5FC0F022808377004235F1 /* RxRelay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxRelay.framework; path = ../Carthage/Build/iOS/RxRelay.framework; sourceTree = "<group>"; };
+		C0A100032B10000100A10001 /* Observable+AsyncSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Observable+AsyncSequence.swift"; sourceTree = "<group>"; };
+		C0A100042B10000100A10001 /* Lifecycle+AsyncSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Lifecycle+AsyncSequence.swift"; sourceTree = "<group>"; };
+		C0A100052B10000100A10001 /* AsyncStreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncStreamTests.swift; sourceTree = "<group>"; };
 		E8E789432378AD000043E59E /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -110,6 +116,7 @@
 				413177271F8EEFEF005F08F0 /* Router.swift */,
 				413177241F8EEFEF005F08F0 /* ViewableRouter.swift */,
 				413177281F8EEFEF005F08F0 /* ViewControllable.swift */,
+				C0A100002B10000100A10001 /* Concurrency */,
 				418C17551F97DB0E003C03F7 /* DI */,
 				4131773B1F8EF981005F08F0 /* Extensions */,
 				413177361F8EF70A005F08F0 /* LeakDetector */,
@@ -117,6 +124,15 @@
 				413177201F8EEFEF005F08F0 /* Workflow */,
 			);
 			path = Classes;
+			sourceTree = "<group>";
+		};
+		C0A100002B10000100A10001 /* Concurrency */ = {
+			isa = PBXGroup;
+			children = (
+				C0A100042B10000100A10001 /* Lifecycle+AsyncSequence.swift */,
+				C0A100032B10000100A10001 /* Observable+AsyncSequence.swift */,
+			);
+			path = Concurrency;
 			sourceTree = "<group>";
 		};
 		413177201F8EEFEF005F08F0 /* Workflow */ = {
@@ -195,6 +211,7 @@
 			isa = PBXGroup;
 			children = (
 				8B9882F21F86E1CF00ABE009 /* Info.plist */,
+				C0A100052B10000100A10001 /* AsyncStreamTests.swift */,
 				AFB7D4041FC81D6100045D2B /* LaunchRouterTests.swift */,
 				AF90B40B1FBA157700920384 /* Mocks.swift */,
 				AF90B4091FBA14DB00920384 /* RouterTests.swift */,
@@ -382,6 +399,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C0A100022B10000100A10001 /* Lifecycle+AsyncSequence.swift in Sources */,
 				4131773A1F8EF711005F08F0 /* LeakDetector.swift in Sources */,
 				418C175C1F97F19F003C03F7 /* Component.swift in Sources */,
 				4131773D1F8EF98A005F08F0 /* Foundation+Extensions.swift in Sources */,
@@ -392,6 +410,7 @@
 				4131772D1F8EF5FF005F08F0 /* Interactor.swift in Sources */,
 				413177321F8EF5FF005F08F0 /* ViewableRouter.swift in Sources */,
 				413177351F8EF605005F08F0 /* Workflow.swift in Sources */,
+				C0A100012B10000100A10001 /* Observable+AsyncSequence.swift in Sources */,
 				4131772F1F8EF5FF005F08F0 /* PresentableInteractor.swift in Sources */,
 				4131772C1F8EF5FF005F08F0 /* Builder.swift in Sources */,
 				413177331F8EF5FF005F08F0 /* ViewControllable.swift in Sources */,
@@ -404,6 +423,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C0A100062B10000100A10001 /* AsyncStreamTests.swift in Sources */,
 				AFB7D4031FC81C8F00045D2B /* Foundation+ExtensionsTests.swift in Sources */,
 				AF90B4111FBA185E00920384 /* ComponentTests.swift in Sources */,
 				AFB7D4051FC81D6100045D2B /* LaunchRouterTests.swift in Sources */,
