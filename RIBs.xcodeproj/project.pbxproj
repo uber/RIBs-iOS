@@ -35,6 +35,8 @@
 		BF5FC0F122808377004235F1 /* RxRelay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5FC0F022808377004235F1 /* RxRelay.framework */; };
 		C0A100012B10000100A10001 /* Observable+AsyncSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100032B10000100A10001 /* Observable+AsyncSequence.swift */; };
 		C0A100022B10000100A10001 /* Lifecycle+AsyncSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100042B10000100A10001 /* Lifecycle+AsyncSequence.swift */; };
+		C0A100072B10000200A10001 /* AsyncSequence+RIBs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100092B10000200A10001 /* AsyncSequence+RIBs.swift */; };
+		C0A100082B10000200A10001 /* Task+RIBs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A1000A2B10000200A10001 /* Task+RIBs.swift */; };
 		C0A100062B10000100A10001 /* AsyncStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100052B10000100A10001 /* AsyncStreamTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +83,8 @@
 		C0A100032B10000100A10001 /* Observable+AsyncSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Observable+AsyncSequence.swift"; sourceTree = "<group>"; };
 		C0A100042B10000100A10001 /* Lifecycle+AsyncSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Lifecycle+AsyncSequence.swift"; sourceTree = "<group>"; };
 		C0A100052B10000100A10001 /* AsyncStreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncStreamTests.swift; sourceTree = "<group>"; };
+		C0A100092B10000200A10001 /* AsyncSequence+RIBs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AsyncSequence+RIBs.swift"; sourceTree = "<group>"; };
+		C0A1000A2B10000200A10001 /* Task+RIBs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+RIBs.swift"; sourceTree = "<group>"; };
 		E8E789432378AD000043E59E /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -129,8 +133,10 @@
 		C0A100002B10000100A10001 /* Concurrency */ = {
 			isa = PBXGroup;
 			children = (
+				C0A100092B10000200A10001 /* AsyncSequence+RIBs.swift */,
 				C0A100042B10000100A10001 /* Lifecycle+AsyncSequence.swift */,
 				C0A100032B10000100A10001 /* Observable+AsyncSequence.swift */,
+				C0A1000A2B10000200A10001 /* Task+RIBs.swift */,
 			);
 			path = Concurrency;
 			sourceTree = "<group>";
@@ -399,6 +405,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C0A100072B10000200A10001 /* AsyncSequence+RIBs.swift in Sources */,
 				C0A100022B10000100A10001 /* Lifecycle+AsyncSequence.swift in Sources */,
 				4131773A1F8EF711005F08F0 /* LeakDetector.swift in Sources */,
 				418C175C1F97F19F003C03F7 /* Component.swift in Sources */,
@@ -411,6 +418,7 @@
 				413177321F8EF5FF005F08F0 /* ViewableRouter.swift in Sources */,
 				413177351F8EF605005F08F0 /* Workflow.swift in Sources */,
 				C0A100012B10000100A10001 /* Observable+AsyncSequence.swift in Sources */,
+				C0A100082B10000200A10001 /* Task+RIBs.swift in Sources */,
 				4131772F1F8EF5FF005F08F0 /* PresentableInteractor.swift in Sources */,
 				4131772C1F8EF5FF005F08F0 /* Builder.swift in Sources */,
 				413177331F8EF5FF005F08F0 /* ViewControllable.swift in Sources */,
