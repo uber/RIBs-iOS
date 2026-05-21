@@ -11,6 +11,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/ReactiveX/RxSwift", "6.9.0"..<"7.0.0"),
+        .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
         .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.2.2"), // for testTarget only
     ],
     targets: [
@@ -18,7 +19,8 @@ let package = Package(
             name: "RIBs",
             dependencies: [
                 .product(name: "RxSwift", package: "RxSwift"),
-                .product(name: "RxRelay", package: "RxSwift")
+                .product(name: "RxRelay", package: "RxSwift"),
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
             ],
             path: "RIBs"
         ),

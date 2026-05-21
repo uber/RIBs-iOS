@@ -211,6 +211,18 @@ open class Step<WorkflowActionableItemType, ActionableItemType, ValueType> {
 }
 
 /// `Workflow` related obervable extensions.
+public extension AsyncSequence {
+
+    /// Fork the step from this async sequence.
+    ///
+    /// - parameter workflow: The workflow this step belongs to.
+    /// - returns: The newly forked step in the workflow.
+    func fork<WorkflowActionableItemType, ActionableItemType, ValueType>(_ workflow: Workflow<WorkflowActionableItemType>) -> Step<WorkflowActionableItemType, ActionableItemType, ValueType> where Element == (ActionableItemType, ValueType) {
+        workflow.didFork()
+        return Step(workflow: workflow, observable: asObservable())
+    }
+}
+
 public extension ObservableType {
 
     /// Fork the step from this obervable.
