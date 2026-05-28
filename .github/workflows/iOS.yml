@@ -2,6 +2,9 @@ name: CI iOS
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: macos-latest
