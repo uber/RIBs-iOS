@@ -18,6 +18,7 @@ import XCTest
 import RxSwift
 @testable import RIBs
 
+@MainActor
 final class WorkerTests: XCTestCase {
 
     private var worker: TestWorker!

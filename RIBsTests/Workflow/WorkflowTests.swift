@@ -18,6 +18,7 @@ import XCTest
 import RxSwift
 @testable import RIBs
 
+@MainActor
 final class WorkerflowTests: XCTestCase {
 
     func test_nestedStepsDoNotRepeat() {

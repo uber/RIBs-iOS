@@ -1,8 +1,0 @@
-use_frameworks!
-
-platform :ios, '15.0'
-
-target 'RIBs_Example' do
-  pod 'RIBs', :path => '../', :testspecs => ['Tests']
-
-end

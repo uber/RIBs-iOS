@@ -18,6 +18,7 @@
 import XCTest
 import CwlPreconditionTesting
 
+@MainActor
 class ComponentizedBuilderTests: XCTestCase {
 
     func test_componentForCurrentPass_builderReturnsSameInstance_verifyAssertion() {

@@ -49,6 +49,7 @@ final class RouterMock: Routing {
     }
 }
 
+@MainActor
 final class RouterTests: XCTestCase {
 
     private var router: Router<Interactable>!
@@ -73,7 +74,7 @@ final class RouterTests: XCTestCase {
 
     // MARK: - Tests
 
-    func test_load_verifyLifecycleObservable() {
+    func test_load_verifyLifecycleObservable() async {
         router = Router(interactor: InteractableMock())
         var currentLifecycle: RouterLifecycle?
         var didComplete = false
@@ -148,7 +149,7 @@ final class RouterTests: XCTestCase {
         XCTAssertEqual(mockChildInteractor.deactivateCallCount, 1)
     }
    
-    func test_detachChild_deactivatesSubtreeOfTheChild() {
+    func test_detachChild_deactivatesSubtreeOfTheChild() async {
         // given
         router = Router(interactor: InteractableMock())
         let childInteractor = Interactor()
@@ -167,7 +168,7 @@ final class RouterTests: XCTestCase {
         XCTAssertEqual(grandChildInteractor.deactivateCallCount, 1)
     }
 
-    func test_deinit_triggers_leakDetection() {
+    func test_deinit_triggers_leakDetection() async {
         // given
         let interactor = InteractableMock()
         router = Router(interactor: interactor)

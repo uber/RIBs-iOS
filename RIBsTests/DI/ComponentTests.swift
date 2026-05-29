@@ -17,6 +17,7 @@
 import XCTest
 @testable import RIBs
 
+@MainActor
 final class ComponentTests: XCTestCase {
 
     // MARK: - Tests

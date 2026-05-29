@@ -17,11 +17,13 @@
 import Foundation
 
 /// The base protocol for all `Presenter`s.
+@MainActor
 public protocol Presentable: AnyObject {}
 
 /// The base class of all `Presenter`s. A `Presenter` translates business models into values the corresponding
 /// `ViewController` can consume and display. It also maps UI events to business logic method, invoked to
 /// its listener.
+@MainActor
 open class Presenter<ViewControllerType>: Presentable {
 
     /// The view controller of this presenter.

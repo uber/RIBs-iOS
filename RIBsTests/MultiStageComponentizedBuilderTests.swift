@@ -18,6 +18,7 @@
 import XCTest
 import CwlPreconditionTesting
 
+@MainActor
 class MultiStageComponentizedBuilderTests: XCTestCase {
 
     private var builder: MockMultiStageComponentizedBuilder!

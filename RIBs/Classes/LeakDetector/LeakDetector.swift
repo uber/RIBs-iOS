@@ -51,6 +51,7 @@ public protocol LeakDetectionHandle {
 /// A `Router` that owns an `Interactor` might for example expect its `Interactor` be deallocated when the `Router`
 /// itself is deallocated. If the interactor does not deallocate in time, a runtime assert is triggered, along with
 /// critical logging.
+@MainActor
 public class LeakDetector {
 
     /// The singleton instance.

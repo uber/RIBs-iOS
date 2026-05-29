@@ -23,6 +23,7 @@ import RxSwift
 /// RIB.
 ///
 /// A workflow should always start at the root of the tree.
+@MainActor
 open class Workflow<ActionableItemType> {
 
     /// Called when the last step observable is completed.
@@ -104,6 +105,7 @@ open class Workflow<ActionableItemType> {
 /// steps.
 ///
 /// Steps are asynchronous by nature.
+@MainActor
 open class Step<WorkflowActionableItemType, ActionableItemType, ValueType> {
 
     private let workflow: Workflow<WorkflowActionableItemType>
@@ -185,6 +187,7 @@ public extension ObservableType {
     /// - parameter workflow: The workflow this step belongs to.
     /// - returns: The newly forked step in the workflow. `nil` if this observable does not conform to the required
     ///   generic type of (ActionableItemType, ValueType).
+    @MainActor
     func fork<WorkflowActionableItemType, ActionableItemType, ValueType>(_ workflow: Workflow<WorkflowActionableItemType>) -> Step<WorkflowActionableItemType, ActionableItemType, ValueType>? {
         if let stepObservable = self as? Observable<(ActionableItemType, ValueType)> {
             workflow.didFork()
@@ -206,6 +209,7 @@ public extension Disposable {
     /// - note: This is the preferred method when trying to confine a subscription to the lifecycle of a `Workflow`.
     ///
     /// - parameter workflow: The workflow to dispose the subscription with.
+    @MainActor
     func disposeWith<ActionableItemType>(workflow: Workflow<ActionableItemType>) {
         _ = workflow.compositeDisposable.insert(self)
     }
@@ -220,6 +224,7 @@ public extension Disposable {
     ///
     /// - parameter workflow: The workflow to dispose the subscription with.
     @available(*, deprecated, renamed: "disposeWith(workflow:)")
+    @MainActor
     func disposeWith<ActionableItemType>(worflow: Workflow<ActionableItemType>) {
         disposeWith(workflow: worflow)
     }
