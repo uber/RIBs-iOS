@@ -146,6 +146,30 @@ open class Step<WorkflowActionableItemType, ActionableItemType, ValueType> {
         return Step<WorkflowActionableItemType, NextActionableItemType, NextValueType>(workflow: workflow, observable: confinedNextStep)
     }
 
+    /// Executes the given async closure for this step.
+    ///
+    /// - parameter onStep: The async closure to execute for the `Step`.
+    /// - returns: The next step.
+    public final func onAsyncStep<NextActionableItemType, NextValueType>(_ onStep: @escaping (ActionableItemType, ValueType) async throws -> (NextActionableItemType, NextValueType)) -> Step<WorkflowActionableItemType, NextActionableItemType, NextValueType> {
+        return self.onStep { actionableItem, value in
+            Observable.create { observer in
+                let task = Task {
+                    do {
+                        let result = try await onStep(actionableItem, value)
+                        observer.onNext(result)
+                        observer.onCompleted()
+                    } catch {
+                        observer.onError(error)
+                    }
+                }
+
+                return Disposables.create {
+                    task.cancel()
+                }
+            }
+        }
+    }
+
     /// Executes the given closure when the `Step` produces an error.
     ///
     /// - parameter onError: The closure to execute when an error occurs.
@@ -175,9 +199,33 @@ open class Step<WorkflowActionableItemType, ActionableItemType, ValueType> {
     public final func asObservable() -> Observable<(ActionableItemType, ValueType)> {
         return observable
     }
+
+    /// Convert the `Workflow` step into an async throwing sequence.
+    ///
+    /// This method only bridges the step output. It does not commit the workflow or register workflow completion
+    /// and error side effects. Call `commit()` explicitly when this step should act as part of a running workflow.
+    ///
+    /// - returns: The async sequence representation of this `Workflow` step.
+    public final func asAsyncSequence(
+        bufferingPolicy: AsyncThrowingStream<(ActionableItemType, ValueType), Error>.Continuation.BufferingPolicy = .unbounded
+    ) -> AsyncThrowingStream<(ActionableItemType, ValueType), Error> {
+        return observable.asAsyncThrowingStream(bufferingPolicy: bufferingPolicy)
+    }
 }
 
 /// `Workflow` related obervable extensions.
+public extension AsyncSequence {
+
+    /// Fork the step from this async sequence.
+    ///
+    /// - parameter workflow: The workflow this step belongs to.
+    /// - returns: The newly forked step in the workflow.
+    func fork<WorkflowActionableItemType, ActionableItemType, ValueType>(_ workflow: Workflow<WorkflowActionableItemType>) -> Step<WorkflowActionableItemType, ActionableItemType, ValueType> where Element == (ActionableItemType, ValueType) {
+        workflow.didFork()
+        return Step(workflow: workflow, observable: asObservable())
+    }
+}
+
 public extension ObservableType {
 
     /// Fork the step from this obervable.
