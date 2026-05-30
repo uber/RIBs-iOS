@@ -14,6 +14,8 @@
 //  limitations under the License.
 //
 
+#if swift(>=5.6) && canImport(_Concurrency)
+
 public extension InteractorScope {
 
     /// The lifecycle of this interactor exposed as an async stream.
@@ -45,3 +47,4 @@ public extension LeakDetector {
         return status.asAsyncStream(bufferingPolicy: .bufferingNewest(1))
     }
 }
+#endif

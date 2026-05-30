@@ -14,6 +14,8 @@
 //  limitations under the License.
 //
 
+#if swift(>=5.6) && canImport(_Concurrency)
+
 import RxSwift
 
 public extension ObservableType {
@@ -68,3 +70,4 @@ public extension ObservableType {
         }
     }
 }
+#endif

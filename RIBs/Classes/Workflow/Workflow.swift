@@ -202,6 +202,9 @@ open class Step<WorkflowActionableItemType, ActionableItemType, ValueType> {
 
     /// Convert the `Workflow` step into an async throwing sequence.
     ///
+    /// This method only bridges the step output. It does not commit the workflow or register workflow completion
+    /// and error side effects. Call `commit()` explicitly when this step should act as part of a running workflow.
+    ///
     /// - returns: The async sequence representation of this `Workflow` step.
     public final func asAsyncSequence(
         bufferingPolicy: AsyncThrowingStream<(ActionableItemType, ValueType), Error>.Continuation.BufferingPolicy = .unbounded

@@ -14,6 +14,8 @@
 //  limitations under the License.
 //
 
+#if swift(>=5.6) && canImport(_Concurrency)
+
 import RxSwift
 
 public extension Interactor {
@@ -128,3 +130,4 @@ public extension Workflow {
         return task
     }
 }
+#endif

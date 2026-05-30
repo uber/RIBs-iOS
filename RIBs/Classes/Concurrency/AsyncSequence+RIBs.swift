@@ -14,7 +14,8 @@
 //  limitations under the License.
 //
 
-import AsyncAlgorithms
+#if swift(>=5.6) && canImport(_Concurrency)
+
 import RxSwift
 
 /// A type-erased async sequence used to preserve element type information without requiring typed
@@ -54,20 +55,19 @@ public extension AsyncSequence {
 
     /// Confines the async sequence's elements to the given interactor scope.
     ///
-    /// Elements are only yielded while the interactor scope is active. Values emitted while inactive are ignored,
-    /// except for the latest value that can be emitted when the scope becomes active again.
+    /// Elements are only yielded while the interactor scope is active. While the sequence is being iterated,
+    /// values emitted while inactive are ignored except for the latest value, which can be emitted when the scope
+    /// becomes active again.
     ///
     /// - parameter interactorScope: The interactor scope whose activeness this async sequence is confined to.
     /// - returns: The async sequence confined to this interactor's activeness lifecycle.
     func confineTo(_ interactorScope: InteractorScope) -> AnyAsyncSequence<Element> {
         return AnyAsyncSequence(
-            combineLatest(interactorScope.isActiveStream.values, self)
-                .filter { isActive, _ in
-                    isActive
-                }
-                .map { _, element in
-                    element
-                }
+            asObservable()
+                .confineTo(interactorScope)
+                .values
         )
     }
 }
+
+#endif
