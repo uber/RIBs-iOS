@@ -37,7 +37,12 @@
 		C0A100022B10000100A10001 /* Lifecycle+AsyncSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100042B10000100A10001 /* Lifecycle+AsyncSequence.swift */; };
 		C0A100072B10000200A10001 /* AsyncSequence+RIBs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100092B10000200A10001 /* AsyncSequence+RIBs.swift */; };
 		C0A100082B10000200A10001 /* Task+RIBs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A1000A2B10000200A10001 /* Task+RIBs.swift */; };
-		C0A100062B10000100A10001 /* AsyncStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100052B10000100A10001 /* AsyncStreamTests.swift */; };
+		C0A101022B10001000A10001 /* ObservableConcurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A101012B10001000A10001 /* ObservableConcurrencyTests.swift */; };
+		C0A101042B10001000A10001 /* InteractorConcurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A101032B10001000A10001 /* InteractorConcurrencyTests.swift */; };
+		C0A101062B10001000A10001 /* WorkerConcurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A101052B10001000A10001 /* WorkerConcurrencyTests.swift */; };
+		C0A101082B10001000A10001 /* RouterConcurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A101072B10001000A10001 /* RouterConcurrencyTests.swift */; };
+		C0A1010A2B10001000A10001 /* LeakDetectorConcurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A101092B10001000A10001 /* LeakDetectorConcurrencyTests.swift */; };
+		C0A1010C2B10001000A10001 /* WorkflowConcurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A1010B2B10001000A10001 /* WorkflowConcurrencyTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,7 +87,12 @@
 		BF5FC0F022808377004235F1 /* RxRelay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxRelay.framework; path = ../Carthage/Build/iOS/RxRelay.framework; sourceTree = "<group>"; };
 		C0A100032B10000100A10001 /* Observable+AsyncSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Observable+AsyncSequence.swift"; sourceTree = "<group>"; };
 		C0A100042B10000100A10001 /* Lifecycle+AsyncSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Lifecycle+AsyncSequence.swift"; sourceTree = "<group>"; };
-		C0A100052B10000100A10001 /* AsyncStreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncStreamTests.swift; sourceTree = "<group>"; };
+		C0A101012B10001000A10001 /* ObservableConcurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableConcurrencyTests.swift; sourceTree = "<group>"; };
+		C0A101032B10001000A10001 /* InteractorConcurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractorConcurrencyTests.swift; sourceTree = "<group>"; };
+		C0A101052B10001000A10001 /* WorkerConcurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkerConcurrencyTests.swift; sourceTree = "<group>"; };
+		C0A101072B10001000A10001 /* RouterConcurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterConcurrencyTests.swift; sourceTree = "<group>"; };
+		C0A101092B10001000A10001 /* LeakDetectorConcurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeakDetectorConcurrencyTests.swift; sourceTree = "<group>"; };
+		C0A1010B2B10001000A10001 /* WorkflowConcurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkflowConcurrencyTests.swift; sourceTree = "<group>"; };
 		C0A100092B10000200A10001 /* AsyncSequence+RIBs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AsyncSequence+RIBs.swift"; sourceTree = "<group>"; };
 		C0A1000A2B10000200A10001 /* Task+RIBs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+RIBs.swift"; sourceTree = "<group>"; };
 		E8E789432378AD000043E59E /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = SOURCE_ROOT; };
@@ -217,7 +227,7 @@
 			isa = PBXGroup;
 			children = (
 				8B9882F21F86E1CF00ABE009 /* Info.plist */,
-				C0A100052B10000100A10001 /* AsyncStreamTests.swift */,
+				C0A1000B2B10000300A10001 /* Concurrency */,
 				AFB7D4041FC81D6100045D2B /* LaunchRouterTests.swift */,
 				AF90B40B1FBA157700920384 /* Mocks.swift */,
 				AF90B4091FBA14DB00920384 /* RouterTests.swift */,
@@ -227,6 +237,19 @@
 				AF90B4171FBA1F2400920384 /* Workflow */,
 			);
 			path = RIBsTests;
+			sourceTree = "<group>";
+		};
+		C0A1000B2B10000300A10001 /* Concurrency */ = {
+			isa = PBXGroup;
+			children = (
+				C0A101032B10001000A10001 /* InteractorConcurrencyTests.swift */,
+				C0A101092B10001000A10001 /* LeakDetectorConcurrencyTests.swift */,
+				C0A101012B10001000A10001 /* ObservableConcurrencyTests.swift */,
+				C0A101072B10001000A10001 /* RouterConcurrencyTests.swift */,
+				C0A101052B10001000A10001 /* WorkerConcurrencyTests.swift */,
+				C0A1010B2B10001000A10001 /* WorkflowConcurrencyTests.swift */,
+			);
+			path = Concurrency;
 			sourceTree = "<group>";
 		};
 		AF5101421FBBA64A009C0DB3 /* Frameworks */ = {
@@ -431,7 +454,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C0A100062B10000100A10001 /* AsyncStreamTests.swift in Sources */,
+				C0A101042B10001000A10001 /* InteractorConcurrencyTests.swift in Sources */,
+				C0A1010A2B10001000A10001 /* LeakDetectorConcurrencyTests.swift in Sources */,
+				C0A101022B10001000A10001 /* ObservableConcurrencyTests.swift in Sources */,
+				C0A101082B10001000A10001 /* RouterConcurrencyTests.swift in Sources */,
+				C0A101062B10001000A10001 /* WorkerConcurrencyTests.swift in Sources */,
+				C0A1010C2B10001000A10001 /* WorkflowConcurrencyTests.swift in Sources */,
 				AFB7D4031FC81C8F00045D2B /* Foundation+ExtensionsTests.swift in Sources */,
 				AF90B4111FBA185E00920384 /* ComponentTests.swift in Sources */,
 				AFB7D4051FC81D6100045D2B /* LaunchRouterTests.swift in Sources */,
