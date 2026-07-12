@@ -210,7 +210,7 @@
 				E8E789432378AD000043E59E /* Package.swift */,
 				8B9882E61F86E1CF00ABE009 /* Info.plist */,
 			);
-			path = RIBs;
+			path = ../RIBs;
 			sourceTree = "<group>";
 		};
 		8B9882EF1F86E1CF00ABE009 /* RIBsTests */ = {
@@ -226,7 +226,7 @@
 				AF90B4121FBA18CD00920384 /* Worker */,
 				AF90B4171FBA1F2400920384 /* Workflow */,
 			);
-			path = RIBsTests;
+			path = ../RIBsTests;
 			sourceTree = "<group>";
 		};
 		C0A1000B2B10000300A10001 /* Concurrency */ = {
