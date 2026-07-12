@@ -28,11 +28,16 @@ jobs:
       - name: Run tests with coverage
         working-directory: ./Example
         run: |
+          # Resolve an available iPhone simulator at runtime instead of pinning a
+          # model name, which rots whenever the macos-latest runner image updates.
+          DEVICE_ID=$(xcrun simctl list devices available --json \
+            | jq -r '[.devices[][] | select(.name | test("iPhone"))] | first | .udid')
+          echo "Using simulator: $DEVICE_ID"
           xcodebuild \
             -workspace RIBs.xcworkspace \
             -scheme RIBs-Example \
             -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -destination "platform=iOS Simulator,id=$DEVICE_ID" \
             -enableCodeCoverage YES \
             clean test
             
