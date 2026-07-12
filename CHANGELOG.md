@@ -141,3 +141,9 @@
 * Bumps RxSwift dependency version to 6.x.x (6.9.0 at the time of the release) by @alexvbush
 * Adds Swift Package Manager (SPM) setup by @alexvbush
 * Improves CocoaPods and Carthage setup by @alexvbush
+
+### Version 1.1.0
+
+* Adds convenience helpers for interoperating async/await with the RxSwift backbone: `Single.fromAsync` / `Observable.fromAsync` to drop an `async` call into an Rx chain, `Task` lifecycle-cancellation helpers (`cancelOnDeactivate(interactor:)`, `cancelOnStop(_:)`, `cancel(with:)`), and async `Workflow` steps (`onAsyncStep` on the root workflow and on `Step`) (#51)
+* Makes Swift Package Manager the canonical build and moves the Carthage Xcode project under `ios/` so it no longer shadows `Package.swift` at the repo root (#55)
+* CI: resolves the iOS simulator at runtime instead of pinning a model name (#54), and restricts the workflow token to read-only (#52)

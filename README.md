@@ -93,6 +93,52 @@ When you integrate RIBs into your project, it will automatically bring the follo
 
 These dependencies are automatically managed by your chosen package manager and will be resolved to compatible versions.
 
+## async/await Interop with RxSwift
+
+RxSwift is the backbone of RIBs. These are convenience helpers for interoperating with Swift's `async`/`await` from inside the existing Rx lifecycle and workflow model — they let an `async` call drop into an Rx chain, bind a `Task` to a RIB's lifecycle, and add `async` steps to a `Workflow`, all without leaving Rx.
+
+### Calling an async function from an Rx chain
+
+`Single.fromAsync` and `Observable.fromAsync` wrap an `async` call as a cold Rx sequence, so it composes with the operators you already use. The work starts on subscription, and its `Task` is cancelled when the subscription is disposed:
+
+```swift
+someObservable
+    .flatMapLatest { id in
+        Single.fromAsync { try await service.fetch(id) }
+    }
+    .observe(on: MainScheduler.instance)
+    .subscribe(onNext: { ... })
+    .disposeOnDeactivate(interactor: self)
+```
+
+### Binding a Task to a RIB lifecycle
+
+When you do reach for a bare `Task`, these `Task` helpers cancel it when a RIB scope ends, mirroring the existing `Disposable.disposeOnDeactivate` / `disposeOnStop` / `disposeWith` methods:
+
+```swift
+Task { try await work() }.cancelOnDeactivate(interactor: self)
+Task { try await work() }.cancelOnStop(worker)
+Task { try await work() }.cancel(with: workflow)
+```
+
+A `Task` starts running as soon as it's created, so these helpers only cancel it later — they don't delay or prevent it from starting. If the scope is already inactive, the task is cancelled right away.
+
+### Async steps in a Workflow
+
+`onAsyncStep` is a convenience over `onStep` that lets a step's work be `async`, on both the root `Workflow` and any `Step`. Async and Rx steps interleave freely, and the chain still ends in a single `subscribe(...).disposeOnDeactivate(...)`:
+
+```swift
+workflow
+    .onStep { rootItem in rootItem.waitForLogin() }          // Rx step
+    .onAsyncStep { loggedInItem, _ in                        // async step
+        (loggedInItem, try await service.fetchClient(id: 42))
+    }
+    .onStep { item, client in item.routeToClientDetails(client) }
+    .commit()
+    .subscribe(rootActionableItem)
+    .disposeOnDeactivate(interactor: self)
+```
+
 ## Related projects
 
 If you like RIBs, check out other related open source projects from our team:
